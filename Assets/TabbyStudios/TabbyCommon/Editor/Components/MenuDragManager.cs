@@ -8,7 +8,7 @@ namespace TabbyStudios
         public VisualElement dragElement;
         public SettingsDragComponent dragTarget => dragElement?.GetComponent<SettingsDragComponent>();
         public static MenuDragManager previous;
-        public static bool mustHoldKey = Config.instance.GetBool("holdKeyToReorder");
+        public static bool mustHoldKey = Config.GetSetting<bool>("holdKeyToReorder");
 
         private static bool leftMouseHeld(MouseEnterEvent e) => e.pressedButtons % 2 == 1;
         private VisualElement menuView => target.FirstComponent<TabbyScrollView>();

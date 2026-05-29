@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using UnityEngine;
 using UnityEngine.Assertions;
 using Random = System.Random;
 
@@ -135,14 +134,29 @@ namespace TabbyStudios
             return e.IsEmpty();
         }
         
-        public static T WithMax<T>(this IEnumerable<T> e, Func<T,float> prop)
+        
+        public static T WithMax<T>(this IEnumerable<T> e, Func<T,float> prop) where T : class
         {
-            return e.Aggregate((min, next) => prop(next) > prop(min) ? next : min);
+            try
+            {
+                return e.Aggregate((min, next) => prop(next) > prop(min) ? next : min);
+            }
+            catch
+            {
+                return null;
+            }        
         }
         
         public static T WithMin<T>(this IEnumerable<T> e, Func<T,float> prop) where T : class
         {
-            return e.Aggregate((min, next) => prop(next) < prop(min) ? next : min);
+            try
+            {
+                return e.Aggregate((min, next) => prop(next) < prop(min) ? next : min);
+            }
+            catch
+            {
+                return null;
+            }
         }
         
         public static T Unique<T>(this IEnumerable<T> e, Func<T,bool> pred)
@@ -289,14 +303,6 @@ namespace TabbyStudios
         public static int IndexOf<T>(this List<T> e, Func<T,bool> pred)
         {
             return e.IndexOf(e.First(pred));
-        }
-
-        public static void Log<T>(this IEnumerable<T> e)
-        {
-            foreach (var item in e)
-            {
-                Debug.Log(item);
-            }
         }
     }
 }

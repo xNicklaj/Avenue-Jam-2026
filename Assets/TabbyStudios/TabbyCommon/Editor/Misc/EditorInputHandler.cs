@@ -13,7 +13,7 @@ namespace TabbyStudios
         
         static EditorInputHandler()
         {
-            EditorUtil.CallEveryXUpdates(10, CloseMenusOnMinimize);
+            EditorApplication.update += CloseMenusOnMinimize;
             UnityWindows.onFocusChanged += TrackFocusedWindow;
             
             #if !UNITY_2023_1_OR_NEWER
@@ -45,7 +45,7 @@ namespace TabbyStudios
         
         private static void CloseMenusOnMinimize()
         {
-            if (UnityWindows.EditorMinimized() && Config.instance.GetBool("closeMenusOnAltTab"))
+            if (UnityWindows.EditorMinimized() && Config.GetSetting<bool>("closeMenusOnAltTab"))
                 ClearMenus();
         }
         
@@ -72,8 +72,8 @@ namespace TabbyStudios
                 return true;
             
             var split = input.current.modifiers.ToString().Split();
-            var shiftClick = Config.instance.GetString("defaultMenuDropdown") == split[0] && split.Length == 1;
-            var dontUseMenus = !Config.instance.GetBool("useCustomMenus");
+            var shiftClick = Config.GetSetting<string>("defaultMenuDropdown") == split[0] && split.Length == 1;
+            var dontUseMenus = !Config.GetSetting<bool>("useCustomMenus");
             return shiftClick || dontUseMenus;
         }
 

@@ -1,7 +1,7 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <VisualElement name="WelcomeTabContent-" style="flex-grow: 1; flex-direction: column;">
         <VisualElement class="panel-header">
-            <Label text="What&apos;s New in" name="WhatsNewInLabel-" class="panel-title" style="font-size: 18px;" />
+            <Label text="What&apos;s New in" name="WhatsNewInLabel-" class="panel-title" />
             <Button text="View Full Changelog" name="ViewChangelogButton-" class="text-button" />
         </VisualElement>
         <ScrollView class="update-content-scroll">

@@ -36,14 +36,13 @@ namespace TabbyStudios
 
         public override void OnDisable()
         {
-            base.OnDisable();
             shouldCancel = true;
         }
 
         public override void OnMouseEnter(MouseEnterEvent e)
         {
             shouldCancel = false;
-            RunAsync.Fire(Config.instance.GetInt("menuOpenDelay"), () =>
+            RunAsync.Fire(Config.GetSetting<int>("menuOpenDelay"), () =>
             {
                 if (shouldCancel || blockOpen)
                     return;

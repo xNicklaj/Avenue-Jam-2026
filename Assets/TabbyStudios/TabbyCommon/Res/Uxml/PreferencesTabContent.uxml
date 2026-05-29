@@ -1,330 +1,318 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" editor-extension-mode="True">
-    <Style src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uss/PreferencesPage.uss?fileID=7433441132597879392&amp;guid=527c1c96d82efca4dacd40d0bf51b4b3&amp;type=3#PreferencesPage"/>
+    <Style src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uss/PreferencesPage.uss?fileID=7433441132597879392&amp;guid=527c1c96d82efca4dacd40d0bf51b4b3&amp;type=3#PreferencesPage" />
     <VisualElement name="PreferencesTabContent-" class="root-container" style="max-height: 100%; flex-shrink: 0;">
         <VisualElement class="header">
-            <Label text="Preferences" class="header-title"/>
+            <Label text="Preferences" class="header-title" />
             <VisualElement class="header-buttons">
-                <Button text="Export" name="ExportSettingsButton-" class="secondary-button"/>
-                <Button text="Import" name="ImportSettingsButton-" class="secondary-button"/>
-                <Button text="Reset to Defaults" name="ResetToDefaultButton-" class="secondary-button"/>
+                <Button text="Reset to Defaults" name="ResetToDefaultButton-" class="secondary-button" />
+                <Button text="Save Settings" name="SaveSettingButton" class="primary-button" style="display: none; visibility: hidden;" />
             </VisualElement>
         </VisualElement>
         <ScrollView class="settings-scroll">
             <VisualElement name="Options" class="settings-section">
                 <VisualElement name="UseCustomMenus-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Use Custom Menus" class="setting-label"/>
-                        <Label text="When disabled, use context menus everywhere" class="setting-description"/>
+                        <Label text="Use Custom Menus" class="setting-label" />
+                        <Label text="When disabled, use context menus everywhere" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
                 <VisualElement name="UseAnonymousMenus-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Enable Anonymous Menus" class="setting-label"/>
-                        <Label text="When enabled, show other popup menus as Tabby Context menus. Note that these menus can&#39;t be customized" parse-escape-sequences="true" class="setting-description" style="white-space: normal;"/>
+                        <Label text="Enable Anonymous Menus" class="setting-label" />
+                        <Label text="When enabled, show other popup menus as Tabby Context menus&#10;Note that these menus can&apos;t be customized" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
                 <VisualElement name="UseIcons-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Show Icons" name="Label" class="setting-label"/>
-                        <Label text="Icons will not be lost when disabling" class="setting-description"/>
+                        <Label text="Show Icons" name="Label" class="setting-label" />
+                        <Label text="Icons will not be lost when disabling" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
                 <VisualElement name="HideDisabledItems-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Hide Disabled Items" name="Label" class="setting-label"/>
-                        <Label text="When disabled, disabled items will be greyed out, but still visible" class="setting-description"/>
+                        <Label text="Hide Disabled Items" name="Label" class="setting-label" />
+                        <Label text="When disabled, disabled items will be greyed out, but still visible" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
                 <VisualElement name="AutoDeleteMenuItems-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Automatically remove missing [MenuItems]" class="setting-label"/>
-                        <Label text="Items added by plugins or via [MenuItem] are automatically removed if the corresponding attribute is missing" class="setting-description" style="white-space: normal;"/>
+                        <Label text="Automatically remove missing [MenuItems]" class="setting-label" />
+                        <Label text="Items added by plugins or via [MenuItem] are automatically removed if&#10;the corresponding attribute is missing" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
                 </VisualElement>
                 <VisualElement name="CloseMenusOnAltTab-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Alt Tab Closes Menus" class="setting-label"/>
+                        <Label text="Alt Tab Closes Menus" class="setting-label" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
                 <VisualElement name="DefaultMenuDropdown-StringSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Use Default Menus Shortcut" class="setting-label"/>
-                        <Label text="Use this this quickly bring up the built-in menus" class="setting-description"/>
+                        <Label text="Use Default Menus Shortcut" class="setting-label" />
+                        <Label text="Use this this quickly bring up the built-in menus" class="setting-description" />
                     </VisualElement>
                     <VisualElement style="flex-grow: 0; flex-direction: column;">
-                        <DropdownField choices="Shift,Alt,Control,Disabled" index="0" name="DropdownField-ValueChanger" class="dropdown-control setting-control"/>
-                        <Label text="+ Right Click" name="Units" class="setting-description" style="align-self: center; -unity-text-align: upper-left;"/>
+                        <DropdownField choices="Shift,Alt,Control,Disabled" index="0" name="DropdownField-ValueChanger" class="dropdown-control setting-control" />
+                        <Label text="+ Right Click" name="Units" class="setting-description" style="align-self: center; -unity-text-align: upper-left;" />
                     </VisualElement>
-                    <VisualElement style="flex-grow: 1; flex-shrink: 0;"/>
+                    <VisualElement style="flex-grow: 1; flex-shrink: 0;" />
                 </VisualElement>
                 <VisualElement name="MenuOpenDelay-IntSetting" class="setting-row" style="justify-content: flex-start;">
                     <VisualElement name="Text" class="setting-info">
-                        <Label text="Menu Open Delay" class="setting-label"/>
-                        <Label text="Delay to prevent menus being opened accidentaly when hovering" class="setting-description"/>
+                        <Label text="Menu Open Delay" class="setting-label" />
+                        <Label text="Delay to prevent menus being opened accidentaly when hovering" class="setting-description" />
                     </VisualElement>
-                    <editor:IntegerField name="InputField-ValueChanger" value="150" max-length="4" class="setting-control number-control" style="max-width: 80px;"/>
-                    <Label text="ms" name="Units" class="setting-description" style="align-self: center;"/>
-                    <VisualElement style="flex-grow: 1; flex-shrink: 0;"/>
+                    <editor:IntegerField name="InputField-ValueChanger" value="150" max-length="4" class="setting-control number-control" style="max-width: 80px;" />
+                    <Label text="ms" name="Units" class="setting-description" style="align-self: center;" />
+                    <VisualElement style="flex-grow: 1; flex-shrink: 0;" />
                 </VisualElement>
                 <VisualElement name="Search" class="header" style="padding-top: 8px; padding-right: 8px; padding-bottom: 8px; padding-left: 8px;">
-                    <Label text="Search" class="header-title" style="font-size: 16px;"/>
+                    <Label text="Search" class="header-title" style="font-size: 16px;" />
                 </VisualElement>
                 <VisualElement name="UseSearchBar-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Enable Search Bar" class="setting-label"/>
-                        <Label text="Search bar allows searching items by name in any submenu" class="setting-description"/>
+                        <Label text="Enable Search Bar" class="setting-label" />
+                        <Label text="Search bar allows searching items by name in any submenu" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
                 <VisualElement name="UseSearchBarOnSubmenus-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Enable Search Bar on Submenus" class="setting-label"/>
-                        <Label text="When disabled, the search bar will be shown on top level menus only" class="setting-description"/>
+                        <Label text="Enable Search Bar on Submenus" class="setting-label" />
+                        <Label text="When disabled, the search bar will be shown on top level menus only" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
                 </VisualElement>
                 <VisualElement name="AlwaysShowSearchBar-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Always Show Search Bar" class="setting-label"/>
-                        <Label text="When disabled, the search bar is hidden but becomes visible automatically by typing" class="setting-description"/>
+                        <Label text="Always Show Search Bar" class="setting-label" />
+                        <Label text="When disabled, the search bar is hidden but becomes visible automatically by typing" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
                 <VisualElement name="SearchEverywhere-BoolSetting" class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Search Everywhere" class="setting-label"/>
-                        <Label text="When enabled, search will display results from all menus" class="setting-description"/>
+                        <Label text="Search Everywhere" class="setting-label" />
+                        <Label text="When enabled, search will display results from all menus" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
                 </VisualElement>
                 <VisualElement name="MenuSize" class="header" style="padding-top: 8px; padding-right: 8px; padding-bottom: 8px; padding-left: 8px;">
-                    <Label text="Menu Size" class="header-title" style="font-size: 16px;"/>
+                    <Label text="Menu Size" class="header-title" style="font-size: 16px;" />
                 </VisualElement>
                 <VisualElement name="MaxMenuHeight-IntSetting" class="setting-row">
                     <VisualElement name="Text" class="setting-info">
-                        <Label text="Max Menu Height" class="setting-label"/>
-                        <Label class="setting-description"/>
+                        <Label text="Max Menu Height" class="setting-label" />
+                        <Label class="setting-description" />
                     </VisualElement>
-                    <editor:IntegerField name="InputField-ValueChanger" value="500" max-length="4" class="setting-control number-control" style="max-width: 80px;"/>
-                    <Label text="px" name="Units" class="setting-description" style="align-self: center;"/>
-                    <VisualElement style="flex-grow: 1; flex-shrink: 0;"/>
+                    <editor:IntegerField name="InputField-ValueChanger" value="500" max-length="4" class="setting-control number-control" style="max-width: 80px;" />
+                    <Label text="px" name="Units" class="setting-description" style="align-self: center;" />
+                    <VisualElement style="flex-grow: 1; flex-shrink: 0;" />
                 </VisualElement>
                 <VisualElement name="MaxMenuWidth-IntSetting" class="setting-row">
                     <VisualElement name="Text" class="setting-info">
-                        <Label text="Max Menu Width" name="Label" class="setting-label"/>
-                        <Label class="setting-description"/>
+                        <Label text="Max Menu Width" name="Label" class="setting-label" />
+                        <Label class="setting-description" />
                     </VisualElement>
-                    <editor:IntegerField name="InputField-ValueChanger" value="298" max-length="4" class="setting-control number-control" style="max-width: 80px;"/>
-                    <Label text="px" name="Units" class="setting-description" style="align-self: center;"/>
-                    <VisualElement style="flex-grow: 1; flex-shrink: 0;"/>
+                    <editor:IntegerField name="InputField-ValueChanger" value="298" max-length="4" class="setting-control number-control" style="max-width: 80px;" />
+                    <Label text="px" name="Units" class="setting-description" style="align-self: center;" />
+                    <VisualElement style="flex-grow: 1; flex-shrink: 0;" />
                 </VisualElement>
                 <VisualElement name="MenuScale-IntSetting" class="setting-row" style="display: none; visibility: hidden;">
                     <VisualElement name="Text" class="setting-info">
-                        <Label text="Global Menu Scale" class="setting-label"/>
-                        <Label class="setting-description"/>
+                        <Label text="Global Menu Scale" class="setting-label" />
+                        <Label class="setting-description" />
                     </VisualElement>
-                    <editor:IntegerField name="InputField-ValueChanger" value="100" max-length="4" class="setting-control number-control" style="max-width: 80px;"/>
-                    <Label text="%" name="Units" class="setting-description" style="align-self: center;"/>
-                    <VisualElement style="flex-grow: 1; flex-shrink: 0;"/>
+                    <editor:IntegerField name="InputField-ValueChanger" value="100" max-length="4" class="setting-control number-control" style="max-width: 80px;" />
+                    <Label text="%" name="Units" class="setting-description" style="align-self: center;" />
+                    <VisualElement style="flex-grow: 1; flex-shrink: 0;" />
                 </VisualElement>
                 <VisualElement name="MaxItemHeight-IntSetting" class="setting-row">
                     <VisualElement name="Text" class="setting-info">
-                        <Label text="Menu Item Height" class="setting-label"/>
-                        <Label text="Decrease to make menus more compact" class="setting-description"/>
+                        <Label text="Menu Item Height" class="setting-label" />
+                        <Label text="Decrease to make menus more compact" class="setting-description" />
                     </VisualElement>
-                    <editor:IntegerField name="InputField-ValueChanger" value="100" max-length="4" class="setting-control number-control" style="max-width: 80px;"/>
-                    <Label text="%" name="Units" class="setting-description" style="align-self: center;"/>
-                    <VisualElement style="flex-grow: 1; flex-shrink: 0;"/>
+                    <editor:IntegerField name="InputField-ValueChanger" value="100" max-length="4" class="setting-control number-control" style="max-width: 80px;" />
+                    <Label text="%" name="Units" class="setting-description" style="align-self: center;" />
+                    <VisualElement style="flex-grow: 1; flex-shrink: 0;" />
                 </VisualElement>
                 <VisualElement name="MenuFontSize-IntSetting" class="setting-row">
                     <VisualElement name="Text" class="setting-info">
-                        <Label text="Menu Font Size" class="setting-label"/>
-                        <Label class="setting-description"/>
+                        <Label text="Menu Font Size" class="setting-label" />
+                        <Label class="setting-description" />
                     </VisualElement>
-                    <editor:IntegerField name="InputField-ValueChanger" value="12" max-length="2" class="setting-control number-control" style="max-width: 80px;"/>
-                    <Label text="pt" name="Units" class="setting-description" style="align-self: center;"/>
-                    <VisualElement style="flex-grow: 1; flex-shrink: 0;"/>
-                </VisualElement>
-                <VisualElement name="MaxItemsPerMenu-IntSetting" class="setting-row">
-                    <VisualElement name="Text" class="setting-info">
-                        <Label text="Max Items per Menu" class="setting-label"/>
-                        <Label text="Set if you have performance issues with very large menus. \n Items will still be available through search. Leave at -1 for no limit " parse-escape-sequences="true" class="setting-description"/>
-                    </VisualElement>
-                    <editor:IntegerField name="InputField-ValueChanger" value="-1" max-length="4" class="setting-control number-control" style="max-width: 80px;"/>
-                    <Label text="" name="Units" class="setting-description" style="align-self: center; min-width: 12px;"/>
-                    <VisualElement style="flex-grow: 1; flex-shrink: 0;"/>
+                    <editor:IntegerField name="InputField-ValueChanger" value="12" max-length="2" class="setting-control number-control" style="max-width: 80px;" />
+                    <Label text="pt" name="Units" class="setting-description" style="align-self: center;" />
+                    <VisualElement style="flex-grow: 1; flex-shrink: 0;" />
                 </VisualElement>
                 <VisualElement name="Other" class="header" style="padding-top: 8px; padding-right: 8px; padding-bottom: 8px; padding-left: 8px;">
-                    <Label text="Experimental" class="header-title" style="font-size: 16px;"/>
+                    <Label text="Other" class="header-title" style="font-size: 16px;" />
                 </VisualElement>
-                <VisualElement name="MenuFadein-BoolSetting" class="setting-row">
-                    <VisualElement class="setting-info">
-                        <Label text="Enable fade-in animation for menus" class="setting-label"/>
-                        <Label class="setting-description"/>
+                <VisualElement name="JsonPrettyPrint-BoolSetting" class="setting-row">
+                    <VisualElement name="VisualElement" class="setting-info">
+                        <Label text="Use Formatted Json" class="setting-label" />
                         <VisualElement name="Warning" class="warning-container">
-                            <VisualElement class="warning-icon"/>
-                            <Label text="Will affect performance" name="Label" class="warning-text"/>
+                            <VisualElement class="warning-icon" />
+                            <Label text="May decrease performance and increase file sizes" name="Label" class="warning-text" />
                         </VisualElement>
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
-                <VisualElement name="RoundedMenuCorners-BoolSetting" class="setting-row">
-                    <VisualElement class="setting-info">
-                        <Label text="Rounded corners for menus" class="setting-label"/>
-                        <Label class="setting-description"/>
+                <VisualElement name="MultiMonitorFix-BoolSetting" class="setting-row">
+                    <VisualElement name="VisualElement" class="setting-info">
+                        <Label text="Multiple Monitor Fix" class="setting-label" />
                         <VisualElement name="Warning" class="warning-container">
-                            <VisualElement class="warning-icon"/>
-                            <Label text="Will affect performance" name="Label" class="warning-text"/>
+                            <VisualElement class="warning-icon" />
+                            <Label text="Enable only if you see menus appearing in the wrong monitor.&#10;May cause unintented behaviour" name="Label" class="warning-text" />
                         </VisualElement>
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
                 <VisualElement name="FallbackInputHandlingToggle-" class="setting-row">
                     <VisualElement name="VisualElement" class="setting-info">
-                        <Label text="Compatibility mode" class="setting-label"/>
+                        <Label text="Compatibility mode" class="setting-label" />
                         <VisualElement name="Warning" class="warning-container">
-                            <VisualElement class="warning-icon"/>
-                            <Label text="Improved compatibility with certain systems. Disables anonymous menus feature." name="Label" class="warning-text"/>
+                            <VisualElement class="warning-icon" />
+                            <Label text="Improved compatibility with certain systems.&#10;Disables anonymous menus feature." name="Label" class="warning-text" />
                         </VisualElement>
                     </VisualElement>
-                    <Toggle name="Toggle-ValueChanger" class="setting-control"/>
+                    <Toggle name="Toggle-ValueChanger" class="setting-control" />
                 </VisualElement>
             </VisualElement>
             <VisualElement name="Examples" class="settings-section" style="display: none; visibility: hidden;">
-                <Label text="General Settings" class="section-title" style="display: flex; visibility: visible;"/>
+                <Label text="General Settings" class="section-title" style="display: flex; visibility: visible;" />
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Default Mode" class="setting-label"/>
-                        <Label text="Select the default mode when creating new assets" class="setting-description"/>
+                        <Label text="Default Mode" class="setting-label" />
+                        <Label text="Select the default mode when creating new assets" class="setting-description" />
                     </VisualElement>
-                    <editor:EnumField name="default-mode-enum" class="setting-control dropdown-control"/>
+                    <editor:EnumField name="default-mode-enum" class="setting-control dropdown-control" />
                 </VisualElement>
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Default Project Name" class="setting-label"/>
-                        <Label text="Set the default name for new projects" class="setting-description"/>
+                        <Label text="Default Project Name" class="setting-label" />
+                        <Label text="Set the default name for new projects" class="setting-description" />
                     </VisualElement>
-                    <TextField name="project-name-field" class="setting-control text-control"/>
+                    <TextField name="project-name-field" class="setting-control text-control" />
                 </VisualElement>
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Quality Level" class="setting-label"/>
-                        <Label text="Adjust the quality level for rendering (higher values use more resources)" class="setting-description"/>
+                        <Label text="Quality Level" class="setting-label" />
+                        <Label text="Adjust the quality level for rendering (higher values use more resources)" class="setting-description" />
                     </VisualElement>
                     <VisualElement class="slider-container setting-control">
-                        <Slider name="quality-slider" lowValue="1" highValue="10" value="7" class="setting-slider"/>
-                        <Label name="quality-value" text="7" class="slider-value"/>
+                        <Slider name="quality-slider" lowValue="1" highValue="10" value="7" class="setting-slider" />
+                        <Label name="quality-value" text="7" class="slider-value" />
                     </VisualElement>
                 </VisualElement>
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Max Instances" class="setting-label"/>
-                        <Label text="Maximum number of instances to create at runtime" class="setting-description"/>
+                        <Label text="Max Instances" class="setting-label" />
+                        <Label text="Maximum number of instances to create at runtime" class="setting-description" />
                         <VisualElement class="warning-container">
-                            <VisualElement class="warning-icon"/>
-                            <Label text="High values may impact performance on low-end devices" class="warning-text"/>
+                            <VisualElement class="warning-icon" />
+                            <Label text="High values may impact performance on low-end devices" class="warning-text" />
                         </VisualElement>
                     </VisualElement>
-                    <editor:IntegerField name="max-instances-field" value="50" class="setting-control number-control"/>
+                    <editor:IntegerField name="max-instances-field" value="50" class="setting-control number-control" />
                 </VisualElement>
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Enable Multi-threading" class="setting-label"/>
-                        <Label text="Use multiple threads for processing when available" class="setting-description"/>
+                        <Label text="Enable Multi-threading" class="setting-label" />
+                        <Label text="Use multiple threads for processing when available" class="setting-description" />
                     </VisualElement>
-                    <Toggle name="multithreading-toggle" value="true" class="setting-control"/>
+                    <Toggle name="multithreading-toggle" value="true" class="setting-control" />
                 </VisualElement>
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Cache Directory" class="setting-label"/>
-                        <Label text="Directory to store temporary cache files" class="setting-description"/>
+                        <Label text="Cache Directory" class="setting-label" />
+                        <Label text="Directory to store temporary cache files" class="setting-description" />
                     </VisualElement>
                     <VisualElement class="path-field-container setting-control">
-                        <TextField name="cache-path-field" class="path-field"/>
-                        <Button text="Browse..." name="browse-cache-button" class="browse-button"/>
+                        <TextField name="cache-path-field" class="path-field" />
+                        <Button text="Browse..." name="browse-cache-button" class="browse-button" />
                     </VisualElement>
                 </VisualElement>
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="LOD Bias" class="setting-label"/>
-                        <Label text="Level of detail bias factor (0.5 - 2.0)" class="setting-description"/>
+                        <Label text="LOD Bias" class="setting-label" />
+                        <Label text="Level of detail bias factor (0.5 - 2.0)" class="setting-description" />
                         <VisualElement class="warning-container">
-                            <VisualElement class="warning-icon"/>
-                            <Label text="Values below 0.8 may cause visual artifacts" class="warning-text"/>
+                            <VisualElement class="warning-icon" />
+                            <Label text="Values below 0.8 may cause visual artifacts" class="warning-text" />
                         </VisualElement>
                     </VisualElement>
-                    <editor:FloatField name="lod-bias-field" value="1.0" class="setting-control number-control"/>
+                    <editor:FloatField name="lod-bias-field" value="1.0" class="setting-control number-control" />
                 </VisualElement>
                 <VisualElement class="setting-row setting-group">
                     <VisualElement class="setting-info">
-                        <Label text="Debug Options" class="setting-label"/>
-                        <Label text="Enable various debug features" class="setting-description"/>
+                        <Label text="Debug Options" class="setting-label" />
+                        <Label text="Enable various debug features" class="setting-description" />
                     </VisualElement>
                     <VisualElement class="toggle-group setting-control">
                         <VisualElement class="toggle-row">
-                            <Toggle name="debug-logging-toggle" class="setting-toggle"/>
-                            <Label text="Enable Logging" class="toggle-label"/>
+                            <Toggle name="debug-logging-toggle" class="setting-toggle" />
+                            <Label text="Enable Logging" class="toggle-label" />
                         </VisualElement>
                         <VisualElement class="toggle-row">
-                            <Toggle name="debug-gizmos-toggle" class="setting-toggle"/>
-                            <Label text="Show Debug Gizmos" class="toggle-label"/>
+                            <Toggle name="debug-gizmos-toggle" class="setting-toggle" />
+                            <Label text="Show Debug Gizmos" class="toggle-label" />
                         </VisualElement>
                         <VisualElement class="toggle-row">
-                            <Toggle name="debug-statistics-toggle" class="setting-toggle"/>
-                            <Label text="Show Performance Stats" class="toggle-label"/>
+                            <Toggle name="debug-statistics-toggle" class="setting-toggle" />
+                            <Label text="Show Performance Stats" class="toggle-label" />
                         </VisualElement>
                     </VisualElement>
                 </VisualElement>
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Highlight Color" class="setting-label"/>
-                        <Label text="Color used for selection highlights" class="setting-description"/>
+                        <Label text="Highlight Color" class="setting-label" />
+                        <Label text="Color used for selection highlights" class="setting-description" />
                     </VisualElement>
-                    <editor:ColorField name="highlight-color-field" class="setting-control color-control"/>
+                    <editor:ColorField name="highlight-color-field" class="setting-control color-control" />
                 </VisualElement>
                 <VisualElement class="setting-row setting-group">
                     <VisualElement class="setting-info">
-                        <Label text="Export Format" class="setting-label"/>
-                        <Label text="Default format for exported assets" class="setting-description"/>
+                        <Label text="Export Format" class="setting-label" />
+                        <Label text="Default format for exported assets" class="setting-description" />
                     </VisualElement>
                     <VisualElement class="radio-group setting-control">
                         <VisualElement class="radio-row">
-                            <RadioButton name="format-fbx-radio" value="true" class="setting-radio"/>
-                            <Label text="FBX" class="radio-label"/>
+                            <RadioButton name="format-fbx-radio" value="true" class="setting-radio" />
+                            <Label text="FBX" class="radio-label" />
                         </VisualElement>
                         <VisualElement class="radio-row">
-                            <RadioButton name="format-obj-radio" class="setting-radio"/>
-                            <Label text="OBJ" class="radio-label"/>
+                            <RadioButton name="format-obj-radio" class="setting-radio" />
+                            <Label text="OBJ" class="radio-label" />
                         </VisualElement>
                         <VisualElement class="radio-row">
-                            <RadioButton name="format-gltf-radio" class="setting-radio"/>
-                            <Label text="glTF" class="radio-label"/>
+                            <RadioButton name="format-gltf-radio" class="setting-radio" />
+                            <Label text="glTF" class="radio-label" />
                         </VisualElement>
                     </VisualElement>
                 </VisualElement>
                 <VisualElement class="setting-row">
                     <VisualElement class="setting-info">
-                        <Label text="Scale Factor" class="setting-label"/>
-                        <Label text="Apply scaling to exported models" class="setting-description"/>
+                        <Label text="Scale Factor" class="setting-label" />
+                        <Label text="Apply scaling to exported models" class="setting-description" />
                     </VisualElement>
-                    <editor:Vector3Field name="scale-vector-field" class="setting-control vector-control"/>
+                    <editor:Vector3Field name="scale-vector-field" class="setting-control vector-control" />
                 </VisualElement>
                 <VisualElement class="setting-row complex-setting">
                     <VisualElement class="setting-info">
-                        <Label text="Custom Export Path" class="setting-label"/>
-                        <Label text="Specify a custom location for exported files" class="setting-description"/>
+                        <Label text="Custom Export Path" class="setting-label" />
+                        <Label text="Specify a custom location for exported files" class="setting-description" />
                     </VisualElement>
                     <VisualElement class="complex-control-container setting-control">
-                        <Toggle name="custom-export-toggle" class="complex-toggle"/>
+                        <Toggle name="custom-export-toggle" class="complex-toggle" />
                         <VisualElement name="custom-export-container" class="dependent-field-container">
-                            <TextField name="export-path-field" class="dependent-text-field"/>
-                            <Button text="Browse..." name="browse-export-button" class="browse-button"/>
+                            <TextField name="export-path-field" class="dependent-text-field" />
+                            <Button text="Browse..." name="browse-export-button" class="browse-button" />
                         </VisualElement>
                     </VisualElement>
                 </VisualElement>

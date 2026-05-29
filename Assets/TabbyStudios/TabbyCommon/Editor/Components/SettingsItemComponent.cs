@@ -4,7 +4,7 @@ namespace TabbyStudios
 {
     public class SettingsItemComponent : ItemComponent
     {
-        public static bool blockNewMenus => Config.instance.GetBool("lockButton");
+        public static bool blockNewMenus => Config.GetSetting<bool>("lockButton");
         private string scrollConfig => $"{entry.data.parentPath}_scroll_level";
     
         public override void Start()
@@ -35,7 +35,7 @@ namespace TabbyStudios
             if (!e.ctrlKey && !e.commandKey)
                 return;
         
-            var visible = Profiles.instance.menuSerializer.SwitchVisible(entry.data);
+            var visible = MenuDataSerializer.SwitchVisible(entry.data);
             SetVisibilityStyle(visible);
         }
 
@@ -50,7 +50,7 @@ namespace TabbyStudios
             EditorUtil.UpdateDelayCall(() =>
             {
                 var pos = entry.parentMenu.target.SelectFirstComponent<AbstractScroller>().offset;
-                Config.instance.Set(scrollConfig, pos);
+                UnityWindows.GetWindow<SettingsPage>().BufferConfig(scrollConfig, pos);
             });
         }
     }

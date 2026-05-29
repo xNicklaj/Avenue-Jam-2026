@@ -36,7 +36,7 @@ namespace TabbyStudios
         
     }
 
-    public interface FastCacheSearch
+    public abstract class FastCacheSearch
     {
         //speeds up type cache search
     }

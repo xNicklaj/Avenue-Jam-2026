@@ -36,7 +36,7 @@ namespace TabbyStudios
             var func = condition.Compile();
             if(func()) LogUtil.Log($"Warning: condition {condition} was already true");
             #if UNITY_6000_0_OR_NEWER
-            yield return new WaitUntil(func, TimeSpan.FromMilliseconds(msTimeout), () => throw new TimeoutException($"Timed out waiting for {LogUtil.ConditionString(condition)}"));
+            yield return new WaitUntil(func, TimeSpan.FromMilliseconds(msTimeout), () => Evaluate.Fail($"Timed out waiting for {LogUtil.ConditionString(condition)}"));
             #else
             yield return new WaitUntil(func);
             #endif

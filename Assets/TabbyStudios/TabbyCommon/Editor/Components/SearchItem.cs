@@ -30,7 +30,8 @@ namespace TabbyStudios
         {
             //itemRoot.SetColor(new Color(itemRoot.Root().WhereComponent<SearchItem>().Count/30f,0,0,1));
         }
-        
+
+
         public override void Awake()
         {
             RegisterGeometryChanged();

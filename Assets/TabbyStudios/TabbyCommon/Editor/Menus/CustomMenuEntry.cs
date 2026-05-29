@@ -2,7 +2,7 @@ using UnityEngine.UIElements;
 
 namespace TabbyStudios
 {
-    public abstract class CustomMenuEntry : VisualComponent
+    public class CustomMenuEntry : VisualComponent
     {
         [Setting(false)]
         private static bool hideDisabledItems;
@@ -18,7 +18,10 @@ namespace TabbyStudios
             this.data = data;
         }
 
-        public abstract VisualElement CreateParent();
+        public virtual VisualElement CreateParent()
+        {
+            return null;
+        }
         
         public void TryOpenSubmenu()
         {
@@ -40,7 +43,7 @@ namespace TabbyStudios
         public virtual void DisplayAsConditionNotMet()
         {
             conditionMet = false;
-            if (!Config.instance.GetBool(nameof(hideDisabledItems)))
+            if (!Config.GetSetting<bool>(nameof(hideDisabledItems)))
             {
                 target.style.opacity = 0.5f;
                 foreach (var comp in target.SelectComponent<TextComponent>())

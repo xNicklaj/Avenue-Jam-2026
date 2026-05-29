@@ -6,7 +6,7 @@ namespace TabbyStudios
     {
         public override List<CustomMenuEntry> GetItems(string path)
         {
-            var menu = Profiles.instance.menuSerializer.GetMenu(path);
+            var menu = MenuDataSerializer.GetMenu(path);
             var objects = FromData(menu.shownItems);
             return objects;
         }

@@ -4,11 +4,12 @@ using UnityEngine.UIElements;
 
 namespace TabbyStudios
 {
-    public class SettingsPage : TabbyWindow<SettingsPage>, FastCacheSearch
+    public class SettingsPage : TabbyWindow<SettingsPage>
     {
         private VisualElement tabBar;
         private Toggle verticalTabsToggle;
         private VisualElement tabContentContainer;
+        private Map<string, float> bufferedConfigs = new();
 
         [Setting(1024f)]
         private static float settingsPageWidth;
@@ -29,7 +30,7 @@ namespace TabbyStudios
             AssemblyReloadEvents.beforeAssemblyReload += ClearWindows;
 
             size = GetSize();
-            pos = GetPosition();
+            screenPosition = GetPosition();
             minSize = new Vector2(1024, 640);
             titleContent = new GUIContent("Tabby Context");
         
@@ -65,32 +66,41 @@ namespace TabbyStudios
 
             if (e.type == EventType.KeyDown && e.keyCode == KeyCode.L)
             {
-                Config.instance.Flip("lockButton");
+                Config.Flip("lockButton");
             }
             
             if (e.type == EventType.KeyDown && e.keyCode == KeyCode.P)
             {
-                Config.instance.Flip("previewButton");
+                Config.Flip("previewButton");
             }
         }
 
-        public override void OnDestroy()
+        public override void OnOnDestroy()
         {
-            base.OnDestroy();
-            Config.instance.Set(nameof(settingsPageX), lastSeenRect.x);
-            Config.instance.Set(nameof(settingsPageY), lastSeenRect.y);
-            Config.instance.Set(nameof(settingsPageWidth), lastSeenRect.width);
-            Config.instance.Set(nameof(settingsPageHeight), lastSeenRect.height);
+            Config.SetSetting(nameof(settingsPageX), lastSeenRect.x);
+            Config.SetSetting(nameof(settingsPageY), lastSeenRect.y);
+            Config.SetSetting(nameof(settingsPageWidth), lastSeenRect.width);
+            Config.SetSetting(nameof(settingsPageHeight), lastSeenRect.height);
+
+            foreach (var config in bufferedConfigs)
+            {
+                Config.SetSetting(config.Key, config.Value);
+            }
         }
-        
+
+        public void BufferConfig(string name, float value)
+        {
+            bufferedConfigs[name] = value;
+        }
+
         private static Vector2 GetPosition()
         {
-            return new Vector2(Config.instance.GetFloat(nameof(settingsPageX)), Config.instance.GetFloat(nameof(settingsPageY)));
+            return new Vector2(Config.GetSetting<float>(nameof(settingsPageX)), Config.GetSetting<float>(nameof(settingsPageY)));
         }
 
         private static Vector2 GetSize()
         {
-            return new Vector2(Config.instance.GetFloat(nameof(settingsPageWidth)), Config.instance.GetFloat(nameof(settingsPageHeight)));
+            return new Vector2(Config.GetSetting<float>(nameof(settingsPageWidth)), Config.GetSetting<float>(nameof(settingsPageHeight)));
         }
     }
 }

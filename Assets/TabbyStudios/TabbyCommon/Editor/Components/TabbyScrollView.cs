@@ -34,8 +34,7 @@ namespace TabbyStudios
         public void OnScroll(WheelEvent e)
         {
             var totalItemHeight = elements.Sum(item => item.UnscaledHeight() + item.resolvedStyle.marginTop + item.resolvedStyle.marginBottom);
-            var max = Mathf.Max(0, totalItemHeight - target.UnscaledHeight() + 2*target.Padding());
-            var result = Mathf.Clamp(scrollPos.y + sensitivity*e.delta.y, 0, max);
+            var result = Mathf.Clamp(scrollPos.y + sensitivity*e.delta.y, 0, totalItemHeight - target.UnscaledHeight() + 2*target.Padding());
             Scroll(new Vector2(0, result));
         }
         

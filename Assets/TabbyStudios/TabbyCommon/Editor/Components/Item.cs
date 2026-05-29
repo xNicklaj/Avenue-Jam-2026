@@ -14,23 +14,6 @@ namespace TabbyStudios
         private float displacement => containerLength - textLength;
         public bool lockColor;
         
-        private static List<(string, string)> pairs = new ()
-        {
-            ("%", "Ctrl"),
-            ("^", "Ctrl"),
-            ("#", "Shift"),
-            ("&", "Alt"),
-            ("_DEL", "Del"),
-            ("_PGUP", "PgUp"),
-            ("_BACKSPACE", "Backspace"),
-            ("_TAB", "Tab"),
-            ("_HOME", "Home"),
-            ("_PGDN", "PgDn"),
-            ("_END", "End"),
-            ("_INS", "Insert"),
-            ("_", ""),
-        };
-        
         public Item(ItemData data) : base(data)
         {
         }
@@ -45,7 +28,7 @@ namespace TabbyStudios
             RegisterMouseEnter();
             RegisterMouseLeave();
 
-            var fontSize = Config.instance.GetInt(nameof(TabbyConfig.menuFontSize));
+            var fontSize = Config.GetSetting<int>("menuFontSize");
             
             nameLabel = target.SelectFirstComponent<TextComponent>();
             if (nameLabel is not null)
@@ -62,7 +45,7 @@ namespace TabbyStudios
             {
                 var comp = shortcutLabel.GetComponent<TextComponent>();
                 comp.text = shortcutText;
-                comp.fontSize = fontSize - 3;
+                comp.fontSize = fontSize - 2;
                 comp.fontColor = UnityColors.textColor;
             }
             else
@@ -84,25 +67,18 @@ namespace TabbyStudios
             SetSpacing();
 
         }
-
-        public void SetText()
-        {
-            nameLabel.text = data.displayName;
-            nameLabel.target.MarkDirtyRepaint();
-        }
         
         public void SetIcon()
         {
-            if (!Config.instance.GetBool("useIcons")) 
+            if (!Config.GetSetting<bool>("useIcons")) 
                 return;
 
             var icon = target.Q("Icon");
 
-            icon.style.height = CustomMenuLayout.iconSize;
-            icon.style.width = CustomMenuLayout.iconSize;
-
             if (!data.iconName.IsNullOrEmpty())
             {
+                icon.style.height = CustomMenuLayout.iconSize;
+                icon.style.width = CustomMenuLayout.iconSize;
                 icon.style.backgroundImage = IconLoader.GetIcon(data.iconName);
                 icon.style.unityBackgroundImageTintColor = UnityColors.IconColor(data.iconColor);
             }
@@ -131,6 +107,23 @@ namespace TabbyStudios
     
         public string GetShortCut(string path)
         {
+            var pairs = new List<(string, string)>()
+            {
+                ("%","Ctrl"),
+                ("^","Ctrl"),
+                ("#","Shift"),
+                ("&","Alt"),
+                ("_DEL","Del"),
+                ("_PGUP","PgUp"),
+                ("_BACKSPACE","Backspace"),
+                ("_TAB","Tab"),
+                ("_HOME","Home"),
+                ("_PGDN","PgDn"),
+                ("_END","End"),
+                ("_INS","Insert"),
+                ("_",""),
+            };
+            
             #if !UNITY_2023_1_OR_NEWER
                 if(shortcuts.IsNullOrEmpty())
                     LoadShortcuts();

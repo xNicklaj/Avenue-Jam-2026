@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 namespace TabbyStudios
 {
@@ -9,7 +10,7 @@ namespace TabbyStudios
 
         public static void Invoke(int delay, Action action)
         {
-            //Assert.IsFalse(action.IsLambda());
+            Assert.IsFalse(action.IsLambda());
         
             if (!dict.ContainsKey(action))
                 dict[action] = new WindupAction(delay, action);

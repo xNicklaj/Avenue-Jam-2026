@@ -496,6 +496,9 @@ namespace VTabs
             menu.AddDisabledItem(new GUIContent("vTabs hidden menu"));
 
             menu.AddSeparator("");
+            menu.AddItem(new GUIContent("Don't hide left column"), disableWrapping, () => disableWrapping = !disableWrapping);
+
+            menu.AddSeparator("");
             menu.AddItem(new GUIContent("Select cache"), false, () => Selection.activeObject = VTabsCache.instance);
             menu.AddItem(new GUIContent("Clear cache"), false, VTabsCache.Clear);
 
@@ -504,7 +507,11 @@ namespace VTabs
 
         }
 
-
+        public static bool disableWrapping
+        {
+            get => EditorPrefsCached.GetBool("vTabs-disableWrapping", defaultValue: false);
+            set => EditorPrefsCached.SetBool("vTabs-disableWrapping", value);
+        }
 
 
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -12,90 +13,57 @@ namespace TabbyStudios
         private static TabbyInput input = TabbyInput.Input(1);
 
         public static float menuOverlap = 3;
-        private static float scale => Config.instance.GetInt("menuScale") / 100f;
+        private static float scale => Config.GetSetting<int>("menuScale") / 100f;
+
+        private static int maxHeight => Config.GetSetting<int>("maxMenuHeight");
+        private static int maxWidth => Config.GetSetting<int>("maxMenuWidth");
+        private bool allowOverlap;
         
-        private bool isBaseWindow;
-        private Rect parentWindowRect;
-        
-        public override void OnCreate()
+        public override void OnCreate(Vector2 pos)
         {
             defaultMode = Mode.Popup;
+
+            if(!Config.GetSetting<bool>("multiMonitorFix")) 
+                positioner.fitToScreen = FixPosition;
+
+            TryFixBlinking();
+            screenPosition = pos;
+            
             EditorApplication.delayCall += Focus;
+            
+        }
+        
+        private Tuple<float,float> CalculateInterval(CustomMenuWindow exclude)
+        {
+            return CalculateInterval(new List<CustomMenuWindow>{exclude});
+        }
+        
+        private Tuple<float,float> CalculateInterval(IEnumerable<CustomMenuWindow> exclude)
+        {
+            var m = UnityWindows.GetWindows<CustomMenuWindow>().Except(exclude).ToList();
+            if (m.IsNullOrEmpty())
+                return new(0, 0);
+            var max = m.Max(menu => menu.position.x + menu.menu.target.Width());
+            var min = m.Min(menu => menu.position.x);
+            return new(min, max);
         }
 
-        protected override void BeforeDisplay()
+        private bool IsInside(Tuple<float,float> interval)
         {
-            FixPosition();
+            var pos = positioner.DefaultFitRect();
+            return pos.x >= interval.Item1 && pos.x <= interval.Item2 - 8*scale;
         }
         
         private void FixPosition()
         {
-            var windows = UnityWindows.GetWindows<CustomMenuWindow>().Except(this).ToList();
-
-            if (!menu.path.Contains("/")) 
+            //we cant use screenposition because we are in the middle of fixing screenposition
+            var interval = CalculateInterval(this);
+            if (IsInside(interval))
             {
-                isBaseWindow = true;
-                if (TryGetParentWindowRect(out var rect))
-                {
-                    parentWindowRect = rect;
-                }
-            }
-            else
-            {
-                parentWindowRect = windows.FirstOrDefault(w => w.isBaseWindow)?.parentWindowRect ?? default;
-                if (parentWindowRect.width == 0 && parentWindowRect.height == 0) return;
-            }
-            
-            if (isBaseWindow)
-            {
-                var x = Math.Clamp(pos.x, float.NegativeInfinity, parentWindowRect.xMax - size.x);
-                var y = Math.Clamp(pos.y, float.NegativeInfinity, parentWindowRect.yMax - size.y);
-                pos = new Vector2(x,y);
-            }
-            else 
-            {
-                var w = windows.WithMax(w => w.menu?.path.Count("/") ?? float.NegativeInfinity);
-            
-                if (pos.x + size.x > parentWindowRect.xMax && !float.IsNaN(w.resolvedPos.x))
-                {
-                    pos = new Vector2(w.resolvedPos.x - size.x, pos.y);
-                }
-                if (pos.y + size.y > parentWindowRect.yMax)
-                {
-                    pos = new Vector2(pos.x, Math.Clamp(pos.y, float.NegativeInfinity, parentWindowRect.yMax - size.y));
-                }
-            }
-
-            if (menu.TryStartOpacityTransition() || menu.TrySetRoundedCorners() || menu.TryHideBigWindowWhenUnityMinSizeIsTooBig(size))
-            {
-                menu.SetBackgroundPixels(new Rect(pos, size));
+                positioner.rect = new Rect(new Vector2(interval.Item1 - position.size.x*scale + 8*scale, screenPosition.y), position.size);
             }
         }
 
-        private bool TryGetParentWindowRect(out Rect parentRect)
-        {
-            Rect largestX = new Rect();
-            foreach (var w in UnityWindows.GetWindows())
-            {
-                if (w == this) continue;
-                var rect = w.GetFieldValue("m_Parent")?.GetPropertyValue("window")?.GetPropertyValue<Rect>("position") ?? default;
-                if (rect.xMin <= pos.x && rect.xMax > largestX.xMax)
-                {
-                    largestX = rect;
-                }
-            }
-
-            if (mouseOverWindowBeforeOpen == null || mouseOverWindowBeforeOpen is null)
-            {
-                parentRect = default;
-                return false;
-            }
-            
-            var p = mouseOverWindowBeforeOpen.GetFieldValue("m_Parent").GetPropertyValue("window").GetPropertyValue<Rect>("position");
-            parentRect = new Rect(largestX.x, p.y, largestX.width, p.height);
-            return true;
-        }
-        
         private void OnGUI()
         {
             if (input.key == KeyCode.Escape)
@@ -132,9 +100,7 @@ namespace TabbyStudios
         public void KeyTyped(KeyCode key)
         {
             var searchBar = rootVisualElement.SelectFirstComponent<SearchBar>();
-            var windows = UnityWindows.GetWindows<CustomMenuWindow>();
-            if(mouseOverWindow == this || windows.Count(w => w.rootVisualElement.SelectFirstComponent<SearchBar>().IsEnabled()) == 1
-                                       ||(windows.None(w => mouseOverWindow == w) && this.HasFocus()))
+            if(this.HasFocus() || UnityWindows.GetWindows<CustomMenuWindow>().Count(w => w.rootVisualElement.SelectFirstComponent<SearchBar>().IsEnabled()) == 1)
             {
                 searchBar.CharacterTypedWithoutFocus(key);
             }
@@ -142,10 +108,17 @@ namespace TabbyStudios
 
         public static Vector2 CreatePos(CustomMenuEntry caller, int dir)
         {
-            //must use scaled value and unify left and right creation
+            //todo must use scaled value and unify left and right creation
             var screenPos = caller.target.ScreenPosition();
             var space = caller.target.EmptySpaceTo(caller.target.GetComponentUpwards<CustomMenu>().target);
             return new Vector2(screenPos.x + dir*(caller.target.Width() + menuOverlap*scale), screenPos.y - space);
+        }
+        
+        private void TryFixBlinking()
+        {
+            //here we set the size just to attempt to predict the size of the window to make it stop blinking, later we try to figure out how to precompute it
+            //the menus work the same way if we don't set the size here
+            size = new Vector2(maxWidth, maxHeight);
         }
     }
 }

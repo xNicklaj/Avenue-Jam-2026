@@ -25,7 +25,7 @@ namespace TabbyStudios
     
         public static bool Run(string path)
         {
-            if (Config.instance.GetBool("fallbackInputHandling"))
+            if (Config.GetSetting<bool>("fallbackInputHandling"))
             {
                 if (RunWithoutStoredCall(path)) return true;
             }

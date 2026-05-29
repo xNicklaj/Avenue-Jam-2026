@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace TabbyStudios
@@ -6,9 +7,8 @@ namespace TabbyStudios
     {
         protected static T CreateInstance()
         {
-            var before = mouseOverWindow;
             T window = ScriptableObject.CreateInstance<T>();
-            window.mouseOverWindowBeforeOpen = before;
+            window.positioner = new WindowPositioner(window);
             windows.Add(window);
             return window;
         }
@@ -23,17 +23,14 @@ namespace TabbyStudios
         public static T Create(Vector2 pos)
         {
             var window = CreateInstance();
-            window.pos = pos;
-            window.PrivateOnCreate();
+            window.PrivateOnCreate(pos);
             return window;
         }
         
         public static T Create(Rect rect)
         {
             var window = CreateInstance();
-            window.pos = rect.position;
-            window.size = rect.size;
-            window.OnCreate();
+            window.OnCreate(rect);
             return window;
         }
      
@@ -44,13 +41,26 @@ namespace TabbyStudios
             return window;
         }
         
+        private void PrivateOnCreate(Vector2 pos)
+        {
+            try
+            {
+                OnCreate(pos);
+            }
+            catch (Exception e)
+            {
+                DestroyImmediate(this);
+                throw;
+            }
+        }
+        
         private void PrivateOnCreate()
         {
             try
             {
                 OnCreate();
             }
-            catch
+            catch (Exception e)
             {
                 DestroyImmediate(this);
                 throw;
@@ -60,6 +70,16 @@ namespace TabbyStudios
         public virtual void OnCreate()
         {
             
+        }
+        
+        public virtual void OnCreate(Vector2 pos)
+        {
+            
+        }
+        
+        public virtual void OnCreate(Rect pos)
+        {
+           //???? 
         }
     }
 }

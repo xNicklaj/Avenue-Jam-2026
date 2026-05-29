@@ -5,7 +5,7 @@ namespace TabbyStudios
     public class ConfirmationPopup<T> : ContentWrapperPopup<T> where T : ConfirmationPopup<T> 
     {
         public override string xmlName => "ConfirmationPopup";
-        
+    
         public override void ProcessData(VisualElement r)
         {
             r.SelectComponent<ItemDataModifier>().ForEach(em => em.data = data as ItemData);

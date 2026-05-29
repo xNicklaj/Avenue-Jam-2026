@@ -8,20 +8,21 @@ namespace TabbyStudios
     {
         public virtual string xmlName => "";
         public object data { get; set; }
+
+        public Vector2 windowPos;
         
         public static T Create(Vector2 pos, object data)
         {
-            T window = CreateInstance();
-            window.pos = pos;
+            T window = Create();
             window.data = data;
-            window.OnCreate();
+            window.OnCreate(pos);
             return window;
         }
 
-        public override void OnCreate()
+        public override void OnCreate(Vector2 pos)
         {
-            size = new Vector2(700, 700); // large initially so visual element can setup correctly
             defaultMode = Mode.Popup;
+            windowPos = pos;
             rootVisualElement.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
             VisualElement uxml = AssetCache.LoadXml(xmlName);
             ProcessData(uxml);
@@ -43,7 +44,7 @@ namespace TabbyStudios
         public void OnGeometryChanged(GeometryChangedEvent e)
         {
             var style = rootVisualElement.Children().First().resolvedStyle;
-            position = new Rect(pos, new Vector2(style.width,style.height));
+            position = new Rect(windowPos, new Vector2(style.width,style.height));
         }
         
     }

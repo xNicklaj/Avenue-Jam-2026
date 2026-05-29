@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,37 +10,35 @@ namespace TabbyStudios
     [InitializeOnLoad]
     public class TabbyWindow : EditorWindow, AbstractScreenSpace
     {
+        private Vector2 lastSize;
         protected static List<TabbyWindow> windows;
+        protected WindowPositioner positioner;
 
         public Mode defaultMode = Mode.Default;
         public bool notDisposed;
-        public bool didStyleResolve => !float.IsNaN(rootVisualElement.resolvedStyle.width);
-        protected EditorWindow mouseOverWindowBeforeOpen;
+
+        public bool isActuallyDisplaying => !float.IsNaN(rootVisualElement.resolvedStyle.width); 
         
         static TabbyWindow() 
         {
             windows = new();
             EditorApplication.wantsToQuit += OnQuit;
             AssemblyReloadEvents.beforeAssemblyReload += ClearWindows;
-        }
-
-        protected virtual void BeforeDisplay()
-        {
-            
+            EditorUtil.CallEveryXUpdates(20, TryCallOnResizeOnWindows); //todo add proper framerate;
+            //EditorUtil.CallEveryXUpdates(5000, ClearNullWindows);
         }
         
         public void Display(Mode mode = Mode.Default)
         {
-            BeforeDisplay();
             ShowWithMode(mode == Mode.Default ? defaultMode : mode);
+            positioner.OnEnable();
             rootVisualElement.Embed(this);
-            position = new Rect(pos, size);
         }
         
         public IEnumerator DisplayAndWait(Mode mode = Mode.Default)
         {
             Display(mode);
-            yield return RunAsync.WaitUntil(() => didStyleResolve);
+            yield return RunAsync.WaitUntil(() => isActuallyDisplaying);
             yield return null;
         }
         
@@ -55,6 +54,16 @@ namespace TabbyStudios
         public static void ClearWindows()
         {
             windows?.ForEach(w => w?.Dispose());
+        }
+        
+        public static void ClearNullWindows()
+        {
+            var toRemove = windows.Select((w,i) => w == null ? i : -1).Where(i => i != -1).ToList();
+            //Debug.Log(toRemove.Count);
+            foreach (var i in toRemove)
+            {
+                windows.RemoveAt(i);
+            }
         }
         
         private void ShowWithMode(Mode mode)
@@ -79,6 +88,23 @@ namespace TabbyStudios
             return (Vector2)e.worldTransform.GetPosition() + window.position.position;
 
         }
+
+        private static void TryCallOnResizeOnWindows()
+        {
+            foreach (var w in UnityWindows.GetWindows<TabbyWindow>())
+            {
+                if (w.lastSize != w.position.size)
+                {
+                    w.OnResize();
+                    w.lastSize = w.position.size;
+                }
+            }
+        }
+
+        public virtual void OnResize()
+        {
+            
+        }
         
         public static bool OnQuit()
         {
@@ -86,11 +112,18 @@ namespace TabbyStudios
             return true;
         }
 
-        public virtual void OnDestroy()
+        public void OnDestroy()
         {
             //windows.Remove(this);
+            OnOnDestroy();
+        }
+
+        public virtual void OnOnDestroy()
+        {
+            
         }
         
+
         public virtual void OnDisable()
         {
             //this needs to be called instead of OnDispose so unity can call it in cases where we don't control the closing of the window
@@ -112,30 +145,28 @@ namespace TabbyStudios
             Default, Popup,
         }
         
-        private Vector2 _pos;
-        public Vector2 pos
+        public Vector2 screenPosition
         {
-            protected get => _pos;
-            set
-            {
-                if (!didStyleResolve) _pos = value;
-                else position = new Rect(value, resolvedSize);
-            }
+            get => positioner.screenPosition;
+            set => positioner.screenPosition = value;
         }
-
-        private Vector2 _size;
+        
         public Vector2 size
         {
-            protected get => _size;
+            get => positioner.size;
+            set => positioner.size = value;
+        }
+
+        public Rect rect
+        {
+            get => positioner.rect;
             set
             {
-                if (!didStyleResolve) _size = value;
-                else position = new Rect(resolvedPos, value);
+                positioner.screenPosition = value.position;
+                positioner.size = value.size;
             }
         }
         
-        public Vector2 resolvedPos => didStyleResolve ? position.position : new Vector2(float.NaN, float.NaN);
-        public Vector2 resolvedSize => didStyleResolve ? position.size : new Vector2(float.NaN, float.NaN);
     }
     
 }

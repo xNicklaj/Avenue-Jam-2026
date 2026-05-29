@@ -6,35 +6,33 @@ namespace TabbyStudios
 {
     public class CustomMenuLayout : VisualComponent
     {
-        private static float startingIconSize = 22f; // unchanged
-        private static float startingItemHeight = 24f; // unchanged
-
-        public static float iconSize = 20; // was 24
-        public static float arrowWidth = 16; // was 20
-        public static float iconMargin = 0; // was 1 (top/bottom margins removed)
-        public static float menuBorder = 0.5f; // was 1
-        public static float menuPadding = 4; // was 5 (changed for TabbyScrollView top/bottom, but left/right is 0 now)
-        public static float itemHeight = 22; // was 26
-        public static float separatorHeight = 9; // was 6 (ItemWrapper margins: 4+4=8, plus 1px line = 9 total)
-        public static float searchBarHeight = 34; // unchanged (didn't modify)
-        public static float extraSpace = 6; // unchanged (not sure what this maps to)
+        private static float startingIconSize = 24f;
+        private static float startingItemHeight = 26f;
         
-        private static int maxWidth => Config.instance.GetInt("maxMenuWidth");
-        private static int maxHeight => Config.instance.GetInt("maxMenuHeight"); 
+        public static float iconSize = 24;
+        public static float arrowWidth = 20;
+        public static float iconMargin = 1;
+        public static float menuBorder = 1;
+        public static float menuPadding = 5;
+        public static float itemHeight = 26;
+        public static float separatorHeight = 6;
+        public static float searchBarHeight = 34;
+        public static float extraSpace = 12;
         
-        
+        private static int maxWidth => Config.GetSetting<int>("maxMenuWidth");
+        private static int maxHeight => Config.GetSetting<int>("maxMenuHeight");
         private float totalSearchHeight;
         private TabbyScrollView scroller;
         private bool hasSearchBar;
         
         public Vector2 calculatedSize { get; private set; }
+        public bool shouldFixLastItem = true;
         
         private static float widthThing = iconSize + arrowWidth + 2*(iconMargin + menuBorder + menuPadding) + extraSpace;
 
         static CustomMenuLayout()
         {
-            Config.instance.Subscribe<int>(nameof(TabbyConfig.maxItemHeight), CalculateItemHeight);
-            CalculateItemHeight(Config.instance.GetInt(nameof(TabbyConfig.maxItemHeight)));
+            Config.Subscribe<int>("maxItemHeight", CalculateItemHeight, callImmediately:true);
         }
 
         private static void CalculateItemHeight(int mul)
@@ -48,13 +46,13 @@ namespace TabbyStudios
             Calculate(-1, -1);
         }
         
-        public void Calculate(float constantWidth, float constantHeight)
+        public void Calculate(float fixedWidth, float fixedHeight)
         {
              scroller = target.SelectFirstComponent<TabbyScrollView>();
              hasSearchBar = target.GetComponentDownwards<SearchBar>() is { visible: true };
 
              float maxName = 0;
-             
+
              for (int i = 0; i < scroller.items.Count; i++)
              {
                  var item = scroller.items[i];
@@ -63,47 +61,42 @@ namespace TabbyStudios
                      continue;
 
                  var nameLabel = item.Query().Build().FirstOrDefault(e => e.Name() == "Name");
-                 if (nameLabel is null) continue;
+                 if (nameLabel is null)
+                 {
+                     continue;
+                 }
                  
                  var textComp = nameLabel.GetComponent<TextComponent>();
                  var width = textComp.TextSize().x;
                  nameLabel.style.width = width;
                  
                  var shortcut = item.Query().Build().FirstOrDefault(e => e.Name() == "Shortcut");
-                 if (shortcut is not null)
-                 {
-                     var shortcutTextComponent = shortcut.GetComponent<TextComponent>();
-
-                     var shortcutWidth = shortcutTextComponent.TextSize().x;
-                     shortcut.style.width = shortcutWidth;
-
-                     nameLabel.style.maxWidth = maxWidth - widthThing - shortcutWidth;
-
-                     if (width + shortcutWidth > maxName)
-                     {
-                         maxName = width + shortcutWidth;
-                     }
+                 if (shortcut is null)
+                 {  
+                     continue;
                  }
-                 else
+                 
+                 var shortcutText = shortcut.GetComponent<TextComponent>();
+                 var shortcutWidth = shortcutText.TextSize().x;
+                 shortcut.style.width = shortcutWidth;
+                 
+                 nameLabel.style.maxWidth = maxWidth - widthThing - shortcutWidth;
+
+                 
+                 if (width + shortcutWidth > maxName)
                  {
-                     nameLabel.style.maxWidth = maxWidth - widthThing;
-
-                     if (width > maxName)
-                     {
-                         maxName = width;
-                     }
+                     maxName = width + shortcutWidth;
                  }
-
              }
              
              // ReSharper disable once CompareOfFloatsByEqualityOperator
-             if (constantWidth == -1)
+             if (fixedWidth == -1)
              {
                  CalculateSize(maxName);
              }
              else
              {
-                 CalculateSizeWithSize(constantWidth, constantHeight, false);
+                 CalculateSizeWithSize(fixedWidth, fixedHeight);
              }
              
              target.style.width = calculatedSize.x;
@@ -118,37 +111,22 @@ namespace TabbyStudios
                  scroller.target.style.height = calculatedSize.y;
              }
 
-             //GrowLabelsToPreventClipping(scroller);
+             GrowLabelsToPreventClipping(scroller);
         }
 
-        private void CalculateSizeWithSize(float width, float height, bool fixLastItem)
+        private void CalculateSizeWithSize(float width, float height)
         {
             totalSearchHeight = hasSearchBar ? searchBarHeight : 0;
             calculatedSize = new Vector2(Mathf.Min(width, maxWidth), Mathf.Min(height + totalSearchHeight, maxHeight));
-
-            if (fixLastItem)
-            {
-                float totalHeight = 0;
-                foreach (var item in scroller.items)
-                {
-                    var itemHeight = ItemHeight(item);
-                    totalHeight += itemHeight;
-                    if (totalHeight > maxHeight - totalSearchHeight - 2*(menuPadding + menuBorder))
-                    {
-                        calculatedSize = new Vector2(Mathf.Min(width, maxWidth), Mathf.Min(totalHeight - itemHeight + totalSearchHeight + 2*(menuPadding + menuBorder), maxHeight));
-                        break;
-                    }
-                }
-            }
+            //todo maybe grow the window a bit if its too small
         }
         
         private void CalculateSize(float maxName)
         {
             var width = maxName + widthThing;
             var height = scroller.items.Sum(ItemHeight) + 2*(menuPadding+menuBorder);
-            CalculateSizeWithSize(width, height, true);
+            CalculateSizeWithSize(width, height);
         }
-        
         
         private float GoodSeparatorHeight(Separator separator)
         {
@@ -161,6 +139,16 @@ namespace TabbyStudios
             if (item.style.display == DisplayStyle.None) 
                 return 0;
             return item.GetComponent<Separator>() is { } s ? GoodSeparatorHeight(s) : itemHeight;
+        }
+
+        private void GrowLabelsToPreventClipping(TabbyScrollView scroller)
+        {
+            for (int i = 0; i < scroller.items.Count; i++)
+            {
+                var nameLabel = scroller.items[i].Query().Build().FirstOrDefault(e => e.Name() == "Name");
+                if (nameLabel is null) continue;
+                nameLabel.style.width = nameLabel.style.width.value.value + Mathf.Min(nameLabel.style.maxWidth.value.value - nameLabel.style.width.value.value, 10);
+            }
         }
     }
 }

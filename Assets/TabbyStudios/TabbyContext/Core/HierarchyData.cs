@@ -27,7 +27,7 @@ namespace TabbyStudios
         {
             foreach (var item in data)
             {
-                foreach (var field in new[]{"path", "originalPath", "executionPath"})
+                foreach (var field in Q.A("path", "originalPath", "executionPath"))
                 {
                     var value = item.GetFieldValue<string>(field);
                     if (value.StartsWith("GameObject"))
@@ -223,15 +223,8 @@ namespace TabbyStudios
                 executionPath = "GameObject/Added GameObject/Revert",
                 originalPriority = 1,
             });
-
-            list.Add(new ItemData()
-            {
-                isSeparator = false,
-                originalPath = "GameObject/Properties...",
-                executionPath = "Assets/Properties...",
-                originalPriority = 200,
-            });
             
+
             UpgradeItems(list);
             
             return list;

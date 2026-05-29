@@ -22,7 +22,7 @@ namespace TabbyStudios
 
         static MenuPatcher()
         {
-            if (Config.instance.GetBool("fallbackInputHandling")) return;
+            if (Config.GetSetting<bool>("fallbackInputHandling")) return;
             
             Patcher.Prefix(typeof(EditorUtility).GetMethodInfo("Internal_DisplayCustomMenu"), typeof(MenuPatcher).GetMethodInfo("InterceptCustomMenu"));
             Patcher.Prefix(typeof(EditorUtility).GetMethodInfo("Internal_DisplayPopupMenu"), typeof(MenuPatcher).GetMethodInfo("InterceptPopupMenu"));
@@ -38,7 +38,7 @@ namespace TabbyStudios
             
             if (menu == "" || EditorInputHandler.ShouldUseDefault())
                 return true;
-
+            
             EditorUtil.UpdateDelayCall(() => EditorInputHandler.LaunchMenu(menu, position.position));
             return false;
         }
@@ -56,12 +56,10 @@ namespace TabbyStudios
             
             if (menu == "")
             {
-                if (Config.instance.GetBool("useAnonymousMenus"))
+                if (Config.GetSetting<bool>("useAnonymousMenus"))
                 {
                     items = list.Select((o, i) => new AnonymousMenuItemData(o, selected?.Contains(i) ?? false, separator[i])).ToList();
                     menu = TabbyAssets.anonymousMenuPath;
-                    screenPosition.x += 1;
-                    screenPosition.y += 18;
                 }
                 else
                 {
@@ -80,7 +78,7 @@ namespace TabbyStudios
                     dict[optionPath] = selection => callback(selection, list.ToArray(), i);
                 }
             }
-
+            
             EditorUtil.UpdateDelayCall(() => EditorInputHandler.LaunchMenu(menu, screenPosition.position));
             return false;
         }
@@ -88,7 +86,7 @@ namespace TabbyStudios
         private static bool BlockInspectMenu(string[] options)
         {
             #if !Unity_2022_1_OR_NEWER
-            if (options.Length == 1 && options[0] == "Inspect Element" && UnityWindows.GetWindow(TabbyAssets.settingsPage) is not null)
+            if (options.Length == 1 && options[0] == "Inspect Element" && UnityWindows.GetWindow<SettingsPage>() is not null)
                 return true;
             #endif
             

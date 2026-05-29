@@ -5,23 +5,23 @@ using UnityEngine.UIElements;
 
 namespace TabbyStudios
 {
+    public class TabbyAssetData { }
+    
     [InitializeOnLoad]
     public class TabbyAssets
     {
         public static Type tabbyContextData, tabbyContextFiles;
         public static Type tabbyMenusData, tabbyMenusFiles;
-        public static Type settingsPage;
 
         public static bool hasTabbyContext => tabbyContextFiles is not null;
         public static bool hasTabbyMenus => tabbyMenusFiles is not null;
-        public static bool isTabbyContextFree => settingsPage is not null;
         
         public static string anonymousMenuPath = "_ANONYMOUS_MENU";
         public const string extraMenuPrefix = "_tabby_";
         
         static TabbyAssets()
         {
-            foreach (var t in TypeCache.GetTypesDerivedFrom(typeof(FastCacheSearch)))
+            foreach (var t in TypeCache.GetTypesDerivedFrom(typeof(TabbyAssetData)))
             {
                 if (t.FullName == "TabbyStudios.TabbyContextData")
                     tabbyContextData = t;
@@ -31,8 +31,6 @@ namespace TabbyStudios
                     tabbyContextFiles = t;
                 else if (t.FullName == "TabbyStudios.TabbyMenusFiles")
                     tabbyMenusFiles = t;
-                else if (t.FullName == "TabbyStudios.SettingsPage")
-                    settingsPage = t; 
             }
         }
 
@@ -52,11 +50,6 @@ namespace TabbyStudios
                 list.Add((T)tabbyMenusData.InvokeStaticMethod(method, args));
 
             return list;
-        }
-        
-        public static void DisposeSettingsPage()
-        {
-            UnityWindows.GetWindow(settingsPage).InvokeMethod("Dispose");
         }
         
         public static List<T> GetAssetDataList<T>(string method, params object[] args)

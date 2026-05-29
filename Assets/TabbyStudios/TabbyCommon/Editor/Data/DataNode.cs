@@ -11,7 +11,8 @@ namespace TabbyStudios
         private Map<string, DataNode> childrenDict = new();
         
         public DataNode parent { get; private set; }
-        public bool isRoot;
+        public int startingDepth;
+        public bool isRoot; //todo ensure is no longer root when added
         public int Count => Flatten().Count;
 
         public const string rootPath = "";
@@ -39,6 +40,12 @@ namespace TabbyStudios
             this.data = data;
         }
         
+        public DataNode(ItemData data, int startingDepth)
+        {
+            this.data = data;
+            this.startingDepth = startingDepth;
+        }
+
         public static DataNode CreateRoot()
         {
             var node = new DataNode();
@@ -123,7 +130,7 @@ namespace TabbyStudios
         public DataNode FindAssert(string path)
         {
             var result = Find(path);
-            //Assert.IsNotNull(result, $"Couldn't find {path} in tree");
+            Assert.IsNotNull(result, $"Couldn't find {path} in tree");
             return result;
         }
         
@@ -172,7 +179,12 @@ namespace TabbyStudios
         {
             return isRoot ? this : parent.Root();
         }
-        
+
+        private bool DescendsFromNodeWithStartingDepth()
+        {
+            return parent is null ? false : parent.startingDepth != 0 ? true : parent.DescendsFromNodeWithStartingDepth();
+        }
+
         public List<DataNode> Children()
         {
             return children.OrderBy(c => c.data.priority).ToList();

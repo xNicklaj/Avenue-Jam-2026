@@ -832,13 +832,15 @@ namespace VTabs
             if (!browser.hasFocus) return;
             if (mi_VFavorites_CanBrowserBeWrapped != null && mi_VFavorites_CanBrowserBeWrapped.Invoke(null, new[] { browser }).Equals(false)) return;
 
-            var isLocked = browser.GetMemberValue<bool>("isLocked");
             var isWrapped = browser.GetMemberValue("m_Parent").GetMemberValue<Delegate>("m_OnGUI").Method == mi_WrappedBrowserOnGUI;
+
+            var isLocked = browser.GetMemberValue<bool>("isLocked");
+            var shouldBeWrapped = isLocked && !VTabsGUI.disableWrapping;
 
             void wrap()
             {
-                if (!isLocked) return;
                 if (isWrapped) return;
+                if (!shouldBeWrapped) return;
 
                 var hostView = browser.GetMemberValue("m_Parent");
 
@@ -854,8 +856,8 @@ namespace VTabs
             }
             void unwrap()
             {
-                if (isLocked) return;
                 if (!isWrapped) return;
+                if (shouldBeWrapped) return;
 
                 var hostView = browser.GetMemberValue("m_Parent");
 
@@ -956,11 +958,16 @@ namespace VTabs
 
         static void ReplaceUnloadedPropertyEditors_withPlaceholderWIndows()
         {
-            foreach (var propertyEditor in allPropertyEditors)
-                if (propertyEditor.GetMemberValue<Object>("m_InspectedObject") == null)
+            // closes non-prefabs too because m_InspectedObject is set to null when changing title
+            // and doesn't work that reliably anyway
+            // so I just commented it 
 
-                    ScriptableObject.CreateInstance<VTabsPlaceholderWindow>()
-                                    .Open_andReplacePropertyEditor(propertyEditor);
+
+            // foreach (var propertyEditor in allPropertyEditors)
+            //     if (propertyEditor.GetMemberValue<Object>("m_InspectedObject") == null)
+
+            //         ScriptableObject.CreateInstance<VTabsPlaceholderWindow>()
+            //                         .Open_andReplacePropertyEditor(propertyEditor);
 
         }
 
@@ -1557,7 +1564,7 @@ namespace VTabs
 
 
 
-        const string version = "2.1.5";
+        const string version = "2.1.6";
 
     }
 }

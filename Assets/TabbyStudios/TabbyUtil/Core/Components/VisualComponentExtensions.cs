@@ -1,28 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace TabbyStudios
 {
     public static class VisualComponentExtensions
     {
-        private static Type cachedEditorRootType;
+        private static Type cachedEditorRootType, cachedRuntimeRootType;
     
         private static Dictionary<VisualElement, List<VisualComponent>> elementMap = new();
         private static Dictionary<VisualElement, AbstractScreenSpace> rootSpaces = new();
 
-        public static Dictionary<string, List<Func<VisualComponent>>> typeDict;
+        private static string assemblyPrefix = "Tabby";
+        private static List<Type> types;
         
         static VisualComponentExtensions()
         {
-            typeDict = TypeCache.GetTypesDerivedFrom<FastCacheSearch>().First(t => t.Name == "ComponentMap").GetFieldValue<Dictionary<string, List<Func<VisualComponent>>>>("components");
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name.StartsWith(assemblyPrefix)).ToList();
+            types = assemblies.SelectMany(a => a.GetTypes()).Where(t => typeof(VisualComponent).IsAssignableFrom(t)).ToList();
+            cachedRuntimeRootType = typeof(TemplateContainer);
         }
     
         public static bool IsRoot(this VisualElement e)
         {
-            return e.IsEditorRoot();
+            return e is not null && e.IsEditorRoot() || e.IsRuntimeRoot();
         }
 
         private static bool IsEditorRoot(this VisualElement e)
@@ -30,6 +32,11 @@ namespace TabbyStudios
             return e is not null && e.name.StartsWith("rootVisualContainer");
         }
         
+        private static bool IsRuntimeRoot(this VisualElement e)
+        {
+            return e is not null && e.name.StartsWith("UIDocument-container");
+        }
+
         public static VisualElement Root(this VisualElement e)
         {
             return e is null ? null : e.IsRoot() ? e : Root(e.parent);
@@ -49,6 +56,11 @@ namespace TabbyStudios
         {
             return e.Root().IsEditorRoot();
         }
+        
+        public static bool IsRuntimeElement(this VisualElement e)
+        {
+            return e.Root().IsRuntimeRoot();
+        }
 
         public static AbstractScreenSpace ContainingSpace(this VisualElement e)
         {
@@ -66,14 +78,14 @@ namespace TabbyStudios
         
         public static T AddComponent<T>(this VisualElement e) where T : VisualComponent
         {
-            var t = (T)FastActivator.CreateInstance(typeof(T));
+            var t = (T)Activator.CreateInstance(typeof(T));
             InitComponent(t, e);
             return t;
         }
     
         public static T AddComponent<T>(this VisualElement e, params object[] args) where T : VisualComponent
         {
-            var t = (T)FastActivator.CreateInstance(typeof(T),args);
+            var t = (T)Activator.CreateInstance(typeof(T),args);
             InitComponent(t, e);
             return t;
         }
@@ -98,13 +110,13 @@ namespace TabbyStudios
         {
             var templateContainer = tree.Instantiate();
             var elem = templateContainer.Children().First();
+            // if (templateContainer.styleSheets != default && templateContainer.styleSheets.count != 0)
+            //     elem.styleSheets.Add(templateContainer.styleSheets[0]);
             for (int i = 0; i < templateContainer.styleSheets.count; i++)
             {
                 elem.styleSheets.Add(templateContainer.styleSheets[i]);
             }
-            
-            var a = elem.ForEach(CreateComponents);
-            return a;
+            return elem.ForEach(CreateComponents);
         }
         
         public static void RemoveTemplateContainers(this VisualElement root)
@@ -168,24 +180,28 @@ namespace TabbyStudios
         {
             AddComponentsFromName(e);
         }
-        
+
         private static void AddComponentsFromName(VisualElement e)
         {
             if (e.name.IsNullOrEmpty() || !e.name.Contains("-"))
                 return;
-            
-            var typeList = typeDict.GetValueOrDefault(e.name);
-            if (typeList is null)
+
+            var names = TypeAndArgBuilder.GetTypesAndArgs(e.name);
+
+            foreach (var entry in names)
             {
-                return;
-            }
-            foreach (var type in typeList)
-            {
-                //var comp = FastActivator.CreateInstance(type);
-                //if (comp is VisualComponent c)
-                //{
-                    e.AddComponent(type());
-                //}
+                string name = entry.Key;
+                string[] args = entry.Value;
+                
+                var type = types.FirstOrDefault(t => t.Name == name);
+                
+                if (type is null) 
+                    continue;
+                
+                if (Activator.CreateInstance(type,args) is VisualComponent c)
+                {
+                    e.AddComponent(c);
+                }
             }
         }
         

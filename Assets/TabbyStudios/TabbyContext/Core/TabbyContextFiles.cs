@@ -3,7 +3,7 @@ using UnityEditor;
 namespace TabbyStudios
 {
     [InitializeOnLoad]
-    public class TabbyContextFiles : FastCacheSearch
+    public class TabbyContextFiles : TabbyAssetData
     {
         public static string tabbyPath;
         public const string rootName = "TabbyContext";

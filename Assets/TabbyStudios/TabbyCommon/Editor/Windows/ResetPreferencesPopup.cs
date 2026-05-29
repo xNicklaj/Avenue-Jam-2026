@@ -1,15 +1,18 @@
+using UnityEditor.Compilation;
+
 namespace TabbyStudios
 {
     public class ResetPreferencesPopup : ConfirmationPopup<ResetPreferencesPopup>
     {
         public override void Confirm()
         {
-            TabbyAssets.DisposeSettingsPage();
+            UnityWindows.GetWindow<SettingsPage>().Dispose();
             
             EditorUtil.DelayCall(() =>
             {
-                Config.instance.ResetDefaults();
-                Config.instance.Set(nameof(TabbyConfig.lastOpenTab), "PreferencesTab");
+                Config.NewConfig();
+                Config.SetSetting("lastOpenTab", "PreferencesTab");
+                CompilationPipeline.RequestScriptCompilation();
             });
         }
 

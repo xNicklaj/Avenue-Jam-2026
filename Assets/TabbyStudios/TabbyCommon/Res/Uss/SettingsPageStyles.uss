@@ -10,8 +10,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border-bottom-width: 1px;
     border-bottom-color: var(--color-border);
-    border-right-color: var(--color-border);
+    background-color: var(--color-background-tertiary);
 }
 
 .logo {
@@ -178,10 +179,6 @@
 
 .bugfix-badge {
     background-color: var(--color-badge-bugfix);
-}
-
-.note-badge {
-    background-color: #ffc42d;
 }
 
 .update-title {

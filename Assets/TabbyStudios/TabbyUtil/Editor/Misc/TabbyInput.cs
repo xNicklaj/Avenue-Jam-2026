@@ -56,9 +56,9 @@ namespace TabbyStudios
                 EditorApplication.projectWindowItemOnGUI += (s,r) => input.Update();
                 EditorApplication.hierarchyWindowItemOnGUI += (s,r) => input.Update();
             }
-            else if(windows.Any(w => w?.GetType().Name == "ProjectBrowser"))
+            else if(windows.Any(w => w?.TypeName() == "ProjectBrowser"))
                 EditorApplication.projectWindowItemOnGUI += (s,r) => input.Update();
-            else if(windows.Any(w => w?.GetType().Name == "SceneHierarchyWindow"))
+            else if(windows.Any(w => w?.TypeName() == "SceneHierarchyWindow"))
                 EditorApplication.hierarchyWindowItemOnGUI += (s,r) => input.Update();
         }
 

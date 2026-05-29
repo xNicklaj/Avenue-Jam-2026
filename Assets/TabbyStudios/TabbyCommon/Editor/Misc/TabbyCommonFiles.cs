@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace TabbyStudios
 {
@@ -9,42 +11,44 @@ namespace TabbyStudios
 
         public static string rootName = "TabbyCommon";
         public static string tabbyPath;
+        public static string profilesFolder => $"{tabbyPath}/Data/Profiles";
+        public static List<string> profiles => TabbyFiles.SafeGetFiles(profilesFolder, "*.json").Select(Path.GetFileNameWithoutExtension).ToList();
         
+        public static string ProfilePath(string profile) => $"{profilesFolder}/{profile}.json";
         public static string UxmlPath(string name) => AssetPath(name, "uxml");
         public static string IconPath(string name) => AssetPath(name, "png");
         public static string UssPath(string name) => AssetPath(name, "uss");
         
         public static Map<string, List<string>> assetFolders;
         
-        public static string version = "1.9.1";
+        public static string version = "1.8.3";
 
         public static List<(string type, string title, string text)> changelog = new()
         {
-            ("fix", "", "Fixed dropdown menus appearing behind the dropdown selector"),
-            ("fix", "", "Item icon configuration now works correctly with Unity's advanced search picker"),
-            ("fix", "", "Fixed show conditions failing when making a search in the project browser"),
-            ("fix", "", "Fixed show conditions not working in Unity 6.3"),
-            ("fix", "", "Fixed menu item reordering issues in Unity 6.3"),
-            ("fix", "", "Fixed deprecated API warnings for Unity 6.3"),
-            ("fix", "1.9.1", "Fixed menus being too large for menus with one or few items"),
-            ("fix", "1.9.1", "Fixed memory leak when using rounded menu corners or menu fade in animation"),
-            ("fix", "1.9.1", "Fixed display conditions not working correctly in some cases"),
-            ("fix", "1.9.1", "Added missing display conditions for multiple menu items"),
-            ("fix", "1.9.1", "Added missing properties item to hierarchy menu"),
-            
-            ("improvement", "", "Improved menu behavior on multi-monitor setups"),
-            ("improvement", "", "Improved performance when customizing menus"),
-            ("improvement", "", "Changes no longer trigger recompilation when you have uncompiled changes"),
-            ("improvement", "", "Removed profiles tab and moved it to the menus tab"),
-            ("improvement", "1.9.1", "Redesigned menu UI for improved visuals and more compact menus"), 
-            ("improvement", "1.9.1", "Various performance improvements"), 
-            
-            ("feature", "", "Added menu fade-in animation"),
-            ("feature", "", "Added rounded corner menus"),
-            ("feature", "", "Preferences and profiles now stored internally with ability to export and share between projects"),
-            ("note", "Important:", "When updating to version 1.9, you must manually import your old profiles located under TabbyCommon/Data/Profiles"),
+            ("fix", "", "Fixed menus not opening when hovering over an item after deleting all text from the search bar"),
+            ("fix", "", "Fixed edits being saved to the wrong profile after resetting all settings to default"),
+            ("fix", "", "Fixed menus occasionally displaying as the wrong size for a frame when opening"),
+            ("fix", "", "Fixed exception when opening menus in the left column of the project browser in some cases"),
+            ("fix", "1.8.1", "Fixed issue with some items in the hierarchy being broken after 1.8.0"),
+            ("fix", "1.8.1", "Fixed modifier key to bring up default menu not working with compatibility mode"),
+            ("fix", "1.8.1", "Fixed exception when trying to open menus with no project browser open"),
+            ("fix", "1.8.2", "Fixed issue with menu items that have the same name as its parent menu"),
+            ("fix", "1.8.2", "Now correctly able to select menu items with enter key"),
+            ("fix", "1.8.2", "Fixed Open Asset In Context option not working correctly with compatibility mode"),
+            ("fix", "1.8.3", "Selecting menu items with enter key now working in search mode"),
+            ("fix", "1.8.3", "Create Empty parent now correctly works with multiple game objects"),
+            ("fix", "1.8.3", "Included some fixes that were accidentally missing from 1.8.2"),
 
-            ("feature", "1.9.1", "New option to limit amount of items per menu for better performance. Items can still be accessed through search"),
+            ("improvement", "", "Settings page now retains its last position when reopened"),
+            ("improvement", "", "Minor performance improvements when opening menus for the first time after a domain reload"),
+            ("improvement", "1.8.2", "Improved performance for hierarchy context menus"),
+            ("improvement", "1.8.2", "Reduced impact on domain reload times"),
+            ("improvement", "1.8.2", "Multiple other minor performance improvements"),
+            ("improvement", "1.8.3", "Improved menu responsiveness inside the settings window"),
+
+            ("feature", "", "Added new option to save formatted JSON"),
+            ("feature", "", "Added new option to hide the search bar by default and automatically show it when typing"),
+            ("feature", "", "Added new option to automatically delete items created by [MenuItem] when the attribute is removed"),
         };
         
         static TabbyCommonFiles()
@@ -68,7 +72,7 @@ namespace TabbyStudios
             foreach (var folder in assetFolders[extension])
             {
                 var path = $"{folder}/{name}.{extension}";
-                //if (File.Exists(path)) //save 0.1ms? almost nothing
+                if (File.Exists(path))
                     return path;
             }
 

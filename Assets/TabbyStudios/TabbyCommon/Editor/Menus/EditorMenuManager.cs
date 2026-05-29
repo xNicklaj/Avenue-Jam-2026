@@ -9,6 +9,7 @@ namespace TabbyStudios
 {
     public class EditorMenuManager : MenuManager
     {
+        
         private static string xmlName = "CustomMenu";
         
         public List<CustomMenuWindow> windows = new();
@@ -31,25 +32,25 @@ namespace TabbyStudios
         {
             try
             {
-                EditorItemShowCondition.RefreshSelection();
                 var window = CustomMenuWindow.Create(position);
-
-                var xml = AssetCache.LoadXml(xmlName);
-                var menuElement = xml.First("CustomMenu");
                 
+                var xml = AssetCache.LoadXml(xmlName);
+                
+                var menuElement = xml.First("CustomMenu");
                 TryAddBar(menuElement, path);
                 var provider = menuElement.AddComponent<EditorItemProvider>(); 
                 var menu = menuElement.AddComponent<CustomMenu>(this,path,provider);
                 window.menu = menu;
                 window.rootVisualElement.AddElement(xml);
+                
                 windows.Add(window);
                 DisableClosing();
+
                 var layout = xml.GetComponentDownwards<CustomMenuLayout>();
                 layout.Calculate();
                 window.size = layout.calculatedSize;
-                window.pos = position;
+                window.screenPosition = position;
                 window.Display();
-                
                 return menu;
             }
             catch
@@ -61,14 +62,14 @@ namespace TabbyStudios
 
         private void TryAddBar(VisualElement menuElement, string path)
         { 
-            if (!Config.instance.GetBool("useSearchBar"))
+            if (!Config.GetSetting<bool>("useSearchBar"))
                 return;
             
-            if(!path.Contains("/") || Config.instance.GetBool("useSearchBarOnSubmenus"))
+            if(!path.Contains("/") || Config.GetSetting<bool>("useSearchBarOnSubmenus"))
             {
                 var bar = menuElement.SelectFirstComponent<SearchBar>();
                 bar.EnableBar();
-                if(Config.instance.GetBool("alwaysShowSearchBar"))
+                if(Config.GetSetting<bool>("alwaysShowSearchBar"))
                     bar.ShowBar();
             }
         }

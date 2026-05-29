@@ -143,6 +143,11 @@ namespace TabbyStudios
             return unityPath;
         }
         
+        private static string FixSlashes(this string s)
+        {
+            return s.ReplaceMultiple("\\", "/");
+        }
+
         public static string GetFileNameWithoutExtension(string s)
         {
             return s.FixSlashes().RemoveBeforeLast("/").RemoveAfterLast(".");

@@ -1,6 +1,5 @@
 {
     "name": "TabbyUtilPatching",
-    "rootNamespace": "",
     "references": [
         "GUID:af6999344e3cad2449aedd809e66d9c9"
     ],
@@ -8,13 +7,11 @@
         "Editor"
     ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": true,
     "precompiledReferences": [
         "0Harmony.dll"
     ],
-    "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "autoReferenced": true,
     "noEngineReferences": false
 }

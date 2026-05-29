@@ -8,7 +8,7 @@ namespace TabbyStudios
     {
         static ContextInputHandler()
         {
-            if (!Config.instance.GetBool("fallbackInputHandling")) return;
+            if (!Config.GetSetting<bool>("fallbackInputHandling")) return;
 
             EditorApplication.hierarchyWindowItemOnGUI += HierarchyWindowItemOnGUI;
             EditorApplication.projectWindowItemOnGUI += ProjectWindowItemOnGUI;

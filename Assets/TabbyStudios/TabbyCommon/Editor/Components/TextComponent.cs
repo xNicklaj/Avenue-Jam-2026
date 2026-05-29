@@ -90,7 +90,6 @@ namespace TabbyStudios
 
         public override void OnGeometryChanged(GeometryChangedEvent e)
         {
-            FitText();
             container.style.width = target.resolvedStyle.width;
             container.style.height = target.resolvedStyle.height;
         }
@@ -105,30 +104,6 @@ namespace TabbyStudios
         private void DrawText()
         {
             GUI.Box(new Rect(0,0,target.resolvedStyle.width,target.resolvedStyle.height), content, style);
-        }
-
-        public void FitText()
-        {
-            var textSize = TextSize().x;
-            var width = target.resolvedStyle.width;
-            
-            //why is text calculation wrong while playing?
-            if (textSize - width > 1 && !Application.isPlaying) //resolve style will round resolved valued
-                text = TruncateWithDots(text, width/textSize);
-        }
-
-        private string TruncateWithDots(string input, float ratio)
-        {
-            if (input == null) return null;
-            if (ratio <= 0f) return "...";
-
-            int maxVisible = (int)(input.Length*ratio) - 3;
-            if (maxVisible < 1) maxVisible = 1;
-
-            if (maxVisible >= input.Length)
-                return input;
-
-            return input.Substring(0, maxVisible) + "...";
         }
     }
 }

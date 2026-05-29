@@ -5,12 +5,12 @@ namespace TabbyStudios
 {
     public class SettingsItemProvider : ItemProvider
     {
-        public bool showAsPreview = Config.instance.GetBool("previewButton");
+        public bool showAsPreview = Config.GetSetting<bool>("previewButton");
 
         
         public override List<CustomMenuEntry> GetItems(string path)
         {
-            var menu = Profiles.instance.menuSerializer.GetMenu(path);
+            var menu = MenuDataSerializer.GetMenu(path);
             var objects = FromData(showAsPreview ? menu.shownItems : menu.items);
             return objects;
         }

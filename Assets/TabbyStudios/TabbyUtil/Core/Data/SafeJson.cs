@@ -39,7 +39,7 @@ namespace TabbyStudios
         
         public static string ToJson(object obj)
         {
-            return ToJson(obj, prettyPrint:Config.instance.GetBool("jsonPrettyPrint"));
+            return ToJson(obj, prettyPrint:Config.GetSetting<bool>("jsonPrettyPrint"));
         }
         
         public static string ToJson(object obj, bool prettyPrint)

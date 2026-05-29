@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace TabbyStudios
 {
-    public class TabbyContextData : FastCacheSearch
+    public class TabbyContextData : TabbyAssetData
     {
         public static string Prefix(string name) => name.AddLeading(TabbyAssets.extraMenuPrefix);
         private static Type cachedPatcher;
@@ -36,8 +36,7 @@ namespace TabbyStudios
         
         public static List<ItemData> GetItemData(string path)
         {
-            //return map.GetOrDefault(path)();
-            return map.GetOrDefault(path)?.Invoke();
+            return map.GetOrDefault(path)();
         }
         
         public static string MapToUnityPath(string path)
@@ -95,8 +94,7 @@ namespace TabbyStudios
 
         public static void AddToSettingsPage(VisualElement uxml)
         {
-            var toolbar = new VisualElement{name = "ShowMenuToolbar"};
-            toolbar.AddToClassList("bottom-toolbar");
+            var toolbar = AssetCache.LoadXml("ShowMenuToolbar");
             toolbar.AddComponent<ShowMenuToolbar>(TopLevelMenus());
             uxml.SelectFirstComponent<ShowMenuToolbarContainer>().target.AddElement(toolbar);
         }
@@ -105,7 +103,7 @@ namespace TabbyStudios
         {
             foreach (var item in data)
             {
-                foreach (var field in new[]{"path", "originalPath"})
+                foreach (var field in Q.A("path", "originalPath"))
                 {
                     var value = item.GetFieldValue<string>(field);
                     item.SetFieldValue(field, value.ReplaceFirst("Assets", Prefix("ProjectBrowser")));

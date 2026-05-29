@@ -24,17 +24,17 @@ namespace TabbyStudios
             }
             else
             {
-                var everywhere = Config.instance.GetBool(nameof(searchEverywhere));
+                var everywhere = Config.GetSetting<bool>(nameof(searchEverywhere));
                 if (everywhere)
                 {
-                    var menu = Profiles.instance.menuSerializer.GetMenu(DataNode.rootPath);
+                    var menu = MenuDataSerializer.GetMenu(DataNode.rootPath);
                     var list = menu.downwards.Where(item => item.displayName.ToLower().Contains(search) && !item.hasChildren).Select(data => new SearchItem(data))
                         .Where(item => item.data.path != TabbyAssets.anonymousMenuPath).ToList<CustomMenuEntry>();
                     return list.Count > 25 ? list.Slice(0, 25) : list;
                 }
                 else
                 {
-                    var menu = Profiles.instance.menuSerializer.GetMenu(path);
+                    var menu = MenuDataSerializer.GetMenu(path);
                     var list =  menu.downwards.Where(item => item.displayName.ToLower().Contains(search) && !item.hasChildren).Select(data => new SearchItem(data))
                         .Where(item => item.data.path != TabbyAssets.anonymousMenuPath).ToList<CustomMenuEntry>();
                     return list.Count > 25 ? list.Slice(0, 25) : list;

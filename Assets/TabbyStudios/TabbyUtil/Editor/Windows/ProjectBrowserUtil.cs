@@ -10,6 +10,7 @@ namespace TabbyStudios
 {
     public class ProjectBrowserUtil
     {
+        
         private static EditorWindow _lastBrowser;
         public static EditorWindow lastBrowser
         {
@@ -39,7 +40,7 @@ namespace TabbyStudios
         public static void TrackFocusedWindow()
         {
             var focusedWindow = EditorWindow.focusedWindow;
-            if (focusedWindow?.GetType().Name == "ProjectBrowser")
+            if (focusedWindow?.TypeName() == "ProjectBrowser")
             {
                 lastBrowser = focusedWindow;
             }
@@ -97,55 +98,16 @@ namespace TabbyStudios
         
         public static Rect ConvertItemRect(Rect r)
         {
-            var offset = new Vector2(LeftColumnWidth()+30, 80) + lastBrowser.position.position;
+            var offset = new Vector2(LeftColumnWidth(), 25);
             return new Rect(r.position + offset, r.size);
-        }
-
-        public static string GetOpenFolder()
-        {
-            return UnityWindows.projectBrowser?.InvokeMethod<string>("GetActiveFolderPath");
         }
 
         public static void SetOpenFolder(string path)
         {
-            #if UNITY_6000_3_OR_NEWER
-            var id = AssetDatabase.LoadAssetAtPath<Object>(path).GetEntityId();
-            UnityWindows.projectBrowser?.InvokeMethod("ShowFolderContents", id, true); 
-            #else
             int id = AssetDatabase.LoadAssetAtPath<Object>(path).GetInstanceID();
             UnityWindows.projectBrowser?.InvokeMethod("ShowFolderContents", id, true); 
-            #endif
-
-            Assert.AreEqual(path, GetOpenFolder());
         }
-
-        public static void SelectFolderInLeftColumn(string path)
-        {
-            SetOpenFolder(path);
-            #if UNITY_6000_3_OR_NEWER
-            Assert.Contains(path, Selection.entityIds.Select(id =>
-            {
-                Object obj = EditorUtility.EntityIdToObject(id);
-                string path = AssetDatabase.GetAssetPath(obj);
-                return path;
-            }).ToList());
-            #endif
-        }
-
-        public static void SetToOneColumn()
-        {
-            UnityWindows.projectBrowser.InvokeMethod("SetViewMode", 0);   
-        }
-
-        public static void SetToTwoColumns()
-        {
-            UnityWindows.projectBrowser.InvokeMethod("SetViewMode", 1);   
-        }
-
-        public static bool IsTwoColumns()
-        {
-            return UnityWindows.projectBrowser?.InvokeMethod<bool>("IsTwoColumns") ?? false;
-        }
+        
         
         //be careful these are extremely slow they're mostly for testing
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -154,9 +116,9 @@ namespace TabbyStudios
         {
             private object localAssets;
             private Dictionary<string, int> idMap;
-            private List<(string, Rect)> list;
+            private List<Rect> list;
 
-            public GUIWrapper(object localAssets, Dictionary<string, int> idMap, List<(string, Rect)> list)
+            public GUIWrapper(object localAssets, Dictionary<string, int> idMap, List<Rect> list)
             {
                 this.localAssets = localAssets;
                 this.idMap = idMap;
@@ -167,7 +129,7 @@ namespace TabbyStudios
             {
                 if (IsInRightColumn(guid,idMap))
                 {
-                    list.Add((guid, ConvertItemRect(badRect)));
+                    list.Add(ConvertItemRect(badRect));
                 }
             }
         }
@@ -180,10 +142,7 @@ namespace TabbyStudios
 
             var thing = new NativeArray<int>(ids.Select(kv => kv.Value).ToArray(), Allocator.Temp);
             var output = new NativeArray<GUID>(thing.Length, Allocator.Temp);
-            
-            #pragma warning disable CS0618 // Type or member is obsolete
             AssetDatabase.InstanceIDsToGUIDs(thing,output);
-            #pragma warning restore CS0618 // Type or member is obsolete
             var normalThing = thing.ToArray();
             var normalOutput = output.ToArray();
 
@@ -192,7 +151,7 @@ namespace TabbyStudios
             return result;
         }
         
-        public static IEnumerator GetDisplayedRects(List<(string, Rect)> list)
+        public static IEnumerator GetDisplayedRects(List<Rect> list)
         {
             var localAssets = LoadLocalAssets();
             var idMap = GetCurrentIds(localAssets);
@@ -218,8 +177,17 @@ namespace TabbyStudios
             Assert.IsNotEmpty(list);
         }
         
-        public static void NoItemPosition(List<Vector2> list, List<Rect> rects) //this is wrong when the left column has scroll offset
+        public static IEnumerator NoItemPosition(List<Vector2> list) //this is wrong when the left column has scroll offset
         {
+            var rects = new List<Rect>();
+            var enumerator = GetDisplayedRects(rects);
+
+            while (rects.IsEmpty())
+            {
+                enumerator.MoveNext();
+                yield return null;
+            }
+            
             float maxX = float.MinValue;
             float maxY = float.MinValue;
 
@@ -233,22 +201,23 @@ namespace TabbyStudios
             list.Add(new Vector2(maxX + 1, maxY + 20));
         }
         
-        // public static IEnumerator ArbitraryItemPosition(List<(string, Vector2)> list)
-        // {
-        //     var rects = new List<(string, Rect)>();
-        //     var enumerator = GetDisplayedRects(rects);
-        //
-        //     while (rects.IsEmpty())
-        //     {
-        //         enumerator.MoveNext();
-        //         yield return null;
-        //     }
-        //     
-        //     var rect = rects.Random();
-        //     var vec = new Vector2(rect.Item2.xMax - 20, rect.Item2.yMax + 20)
-        //     list.Add((rect.Item1,vec));
-        //     
-        // }
+        public static IEnumerator ArbitraryItemPosition(List<Vector2> list)
+        {
+            var rects = new List<Rect>();
+
+            var enumerator = GetDisplayedRects(rects);
+
+            while (rects.IsEmpty())
+            {
+                enumerator.MoveNext();
+                yield return null;
+            }
+            
+            var rect = rects.Random();
+            var vec = new Vector2(rect.xMax - 20, rect.yMax + 20);
+            list.Add(vec);
+            
+        }
         
         #endif
         

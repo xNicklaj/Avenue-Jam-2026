@@ -160,7 +160,7 @@ namespace TabbyStudios
         public static bool FixTree(DataNode tree)
         {
             bool result = InsertNewNodesIntroTree(tree);
-            if (Config.instance.GetBool("autoDeleteMenuItems"))
+            if (Config.GetSetting<bool>("autoDeleteMenuItems"))
             {
                 if (DeleteOldItems(tree))
                     result = true;
@@ -179,6 +179,7 @@ namespace TabbyStudios
             var newTreeUnityPaths = newTree.Flatten().Select(node => node.data.originalPath).ToList();
             var treeUnityPaths = flat.Select(node => node.data.originalPath).ToList();
             var newItems = newTreeUnityPaths.Except(treeUnityPaths).Select(path => newTree.Find(path).data).ToList();
+            //todo maybe set the priority on new items to always show up
             
             if (newItems.Count == 0)
                 return false;
@@ -223,7 +224,7 @@ namespace TabbyStudios
         private static List<string> GetGoodItemList()
         {
             var allItems = TypeCache.GetMethodsWithAttribute<MenuItem>().Select(t => ((MenuItem)t.GetCustomAttributes(typeof(MenuItem), true).First()).menuItem).ToList();
-            var list = allItems.Where(item => !item.StartsWith("CONTEXT/")).Distinct().ToList();
+            var list = allItems.Where(item => !item.StartsWith("CONTEXT/")).ToList();
             list.Sort(StringComparer.Ordinal);
             return list;
         }

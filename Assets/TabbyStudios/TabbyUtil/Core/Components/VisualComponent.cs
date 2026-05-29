@@ -1,11 +1,32 @@
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TabbyStudios
 {
-    public class VisualComponent
+    public class VisualComponent : ITransform
     {
         public VisualElement target;
         public bool didGeometry;
+
+        public Vector3 position
+        {
+            get => target.transform.position;
+            set => value = target.transform.position;
+        }
+
+        public Quaternion rotation
+        {
+            get => target.transform.rotation;
+            set => value = target.transform.rotation;
+        }
+
+        public Vector3 scale
+        {
+            get => target.transform.scale;
+            set => value = target.transform.scale;
+        }
+
+        public Matrix4x4 matrix => target.transform.matrix;
         
         protected bool built,attached;
     
@@ -32,7 +53,7 @@ namespace TabbyStudios
         
         public virtual void OnBeforeDisable()
         {
-            //OnBeforeDisable is called before OnDisable is called on any connected component
+            //OnBeforeDisable is called before OnDisable is called on any connect component
         }
     
     

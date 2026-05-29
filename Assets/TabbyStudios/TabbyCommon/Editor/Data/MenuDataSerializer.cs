@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -8,47 +6,43 @@ using UnityEngine.Assertions;
 
 namespace TabbyStudios
 {
-    public class MenuDataSerializer
+    //[InitializeOnLoad]
+    public static class MenuDataSerializer
     {
-        private DataSaver saver;
-        private Profiles profiles;
-        private int saveQueue;
-        public DataNode allMenus;
+        private static string currentProfile;
+        private static DataNode allMenus;
+        private static DataSaver saver = new();
 
-        public MenuDataSerializer(Profiles profiles)
+        private static int saveQueue;
+        
+        [Setting(false)]
+        private static bool onMenusModified;
+
+        static MenuDataSerializer()
         {
-            this.profiles = profiles;
-            saver = new(profiles);
+            currentProfile = Config.Subscribe<string>("profile", OnProfilePathChanged);
             Init();
         }
-
-        public void OnProfilePathChanged()
+        
+        private static void OnProfilePathChanged(string newValue)
         {
+            currentProfile = newValue;
             Init();
         }
-
-        public void Init()
+        
+        private static void Init()
         {
-            allMenus = saver.GetOrCreateTree();
+            allMenus = saver.Read();
             Assert.IsNotNull(allMenus);
             FixNewMenus();
         }
-
-        public void Import(string path)
-        {
-            var name = TabbyFiles.GetFileNameWithoutExtension(path);
-            var json = File.ReadAllText(path);
-            var tree = saver.Deserialize(json);
-            profiles.CreateProfile(name, tree);
-            profiles.ChangeProfile(name);
-        }
-
-        public void Save()
+        
+        public static void Save()
         {
             saver.Write(allMenus);
         }
-
-        public void DelayedSave()
+        
+        public static void DelayedSave()
         {
             saveQueue++;
             RunAsync.Fire(1000, () =>
@@ -64,33 +58,31 @@ namespace TabbyStudios
                 }
             });
         }
-
-        public MenuData GetMenu(string menuPath)
+    
+        public static MenuData GetMenu(string menuPath)
         {
             var anonymousPath = TabbyAssets.anonymousMenuPath;
             if (menuPath == anonymousPath)
             {
-                if (allMenus.Find(anonymousPath) is not null)
+                if(allMenus.Find(anonymousPath) is not null)
                     allMenus.Remove(allMenus.Find(anonymousPath));
-                MenuBuilder.PasteTrees(new List<DataNode> { allMenus, MenuBuilder.BuildMenu(menuPath).tree });
+                MenuBuilder.PasteTrees(Q.L(allMenus, MenuBuilder.BuildMenu(menuPath).tree));
                 return new MenuData(allMenus.FindAssert(anonymousPath));
-
-                //return new MenuData(MenuBuilder.BuildMenu(menuPath).tree.Children().First());
             }
-
+            
             if (ShouldUseNonCustomizableMenu(menuPath))
             {
                 return GetNonCustomizableMenu(menuPath);
             }
-
+    
             return new MenuData(allMenus.FindAssert(menuPath));
         }
 
-        private MenuData GetNonCustomizableMenu(string menuPath)
+        private static MenuData GetNonCustomizableMenu(string menuPath)
         {
-            var miniTree = MenuBuilder.BuildMenu(menuPath).Find(menuPath);
+            var miniTree = MenuBuilder.BuildMenu(menuPath).Find(menuPath); 
             var menu = allMenus.Find(menuPath);
-
+            
             if (menu is null)
             {
                 allMenus.Add(miniTree);
@@ -99,16 +91,16 @@ namespace TabbyStudios
             {
                 menu.ReplaceChildren(miniTree.Children());
             }
-
+                
             return new MenuData(allMenus.Find(menuPath));
         }
 
-        private bool ShouldUseNonCustomizableMenu(string path)
+        private static bool ShouldUseNonCustomizableMenu(string path)
         {
             return path.Step("/", true).Any(p => ExtraData.nonCustomizablePaths.Contains(p));
         }
 
-        private void FlattenPriorities(DataNode node)
+        private static void FlattenPriorities(DataNode node)
         {
             if (node.parent is null)
                 return;
@@ -116,12 +108,12 @@ namespace TabbyStudios
             node.parent.Children().ForEach((c, i) => c.data.priority = i);
         }
 
-        public void Reorder(ItemData data, ItemData before, ItemData after)
+        public static void Reorder(ItemData data, ItemData before, ItemData after)
         {
             var savedNode = allMenus.Find(data.path);
             FlattenPriorities(savedNode);
             var savedItem = savedNode.data;
-
+            
             float newPriority;
             if (before is not null)
             {
@@ -131,7 +123,7 @@ namespace TabbyStudios
             {
                 newPriority = -1f;
             }
-
+            
             savedItem.priority = newPriority;
             var oldPath = savedItem.path;
             var newPath = $"{(before ?? after).path.RemoveAfterLast("/")}/{savedItem.path.Split("/").Last()}";
@@ -139,8 +131,8 @@ namespace TabbyStudios
             saver.Write(allMenus);
             OnMenusModified();
         }
-
-        public ItemData InsertUnder(ItemData callerData, bool isSeparator, bool userCreated = false)
+    
+        public static ItemData InsertUnder(ItemData callerData, bool isSeparator, bool userCreated = false)
         {
             DataNode node = allMenus.Find(callerData.parentPath);
             ItemData item = new ItemData();
@@ -154,8 +146,8 @@ namespace TabbyStudios
             OnMenusModified();
             return item;
         }
-
-        public ItemData Insert(string path)
+        
+        public static ItemData Insert(string path)
         {
             ItemData item = new ItemData();
             item.path = path;
@@ -168,23 +160,23 @@ namespace TabbyStudios
             return item;
         }
 
-        private float GetSqueezePriority(ItemData callerData)
+        private static float GetSqueezePriority(ItemData callerData)
         {
             var nextItem = GetNextItem(callerData);
 
             if (nextItem is null)
                 return callerData.priority + 1;
-
-            return (callerData.priority + nextItem.priority)/2f;
+            
+            return (callerData.priority + nextItem.priority) / 2f;
         }
 
-        private ItemData GetNextItem(ItemData item)
+        private static ItemData GetNextItem(ItemData item)
         {
             DataNode node = allMenus.Find(item.parentPath);
             return node.ChildData().FirstOrDefault(data => data.priority >= item.priority && data.path != item.path);
         }
-
-        public void SetPropertyRecursively(ItemData data, Action<ItemData> action)
+        
+        public static void SetPropertyRecursively(ItemData data, Action<ItemData> action)
         {
             var node = allMenus.Find(data.path);
             action(node.data);
@@ -193,63 +185,76 @@ namespace TabbyStudios
             {
                 SetPropertyRecursively(child.data, action);
             }
-
+            
             OnMenusModified();
             DelayedSave();
         }
-
-        public void SetProperty(ItemData data, Action<ItemData> action)
+        
+        public static void SetProperty(ItemData data, Action<ItemData> action)
         {
             ItemData item = allMenus.Find(data.path).data;
             action(item);
+            OnMenusModified();
             DelayedSave();
         }
-
-        public void FixNewMenus()
+        
+        public static void FixNewMenus()
         {
             if (MenuBuilder.FixTree(allMenus))
             {
                 Task.Run(() => saver.Write(allMenus));
             }
         }
-
-        public bool SwitchVisible(ItemData data)
+    
+        public static bool SwitchVisible(ItemData data)
         {
             var savedItem = allMenus.Find(data.path).data;
             savedItem.shown = !data.shown;
             saver.Write(allMenus);
             return savedItem.shown;
+            
         }
 
-        public void DuplicateCurrentProfile(string newName)
+        public static void NewProfile(string name)
         {
-            saver.Write(allMenus, newName);
+            var items = MenuBuilder.BuildTree();
+            saver.Write(items,name);
         }
-
-        public void LoadDefaultProfile()
+    
+        public static void DeleteProfile(string name)
         {
-            profiles.DeleteProfile(Profiles.defaultProfile);
-            profiles.CreateProfile(Profiles.defaultProfile);
-            profiles.ChangeProfile(Profiles.defaultProfile);
+            saver.DeleteProfile(name);
+        }
+    
+        public static void DuplicateCurrentProfile(string newName)
+        {
+            saver.Write(allMenus,newName);
+        }
+        
+        public static void LoadDefaultProfile()
+        {
+            saver.Flush();
+            Config.SetSetting("profile",Profiles.defaultProfile);
             Debug.Log("Loaded default profile");
         }
-
-        public void FlushProfile()
+        
+        public static void FlushProfile()
         {
-            //restore
+            saver.Flush();
             Debug.Log("Profile flushed");
         }
 
-        private void OnMenusModified()
+        private static void OnMenusModified()
         {
-            SettingsMenuManager.StaticRefresh();
+            Config.SetSettingWithoutSave(nameof(onMenusModified), true);
         }
 
-        public void ForceUpgrade()
+        public static void ForceUpgrade()
         {
-            allMenus = saver.GetOrCreateTree();
+            allMenus = saver.Read();
             FixNewMenus();
             Save();
         }
+        
     }
 }

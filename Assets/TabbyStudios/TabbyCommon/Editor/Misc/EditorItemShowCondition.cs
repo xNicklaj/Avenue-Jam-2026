@@ -9,27 +9,6 @@ namespace TabbyStudios
     public class EditorItemShowCondition
     {
         private static Map<string, Func<bool>> defaultConditions;
-        private static Map<string, bool> cachedResults = new();
-        
-        private static List<IdWrapper> selection = new();
-        private static List<IdWrapper> leftColumnSelection = new();
-        private static List<IdWrapper> correctSelection => left ? leftColumnSelection : selection;
-        private static bool left;
-
-        public static Map<string, Func<bool>> showMap = new()
-        {
-            { nameof(AnythingSelected), AnythingSelected },
-            { nameof(FolderSelected), FolderSelected },
-            { nameof(NotFolderSelected), NotFolderSelected },
-            { nameof(OneObjectSelected), OneObjectSelected },
-            { nameof(PrefabSelected), PrefabSelected },
-            { nameof(PartOfPrefabSelected), PartOfPrefabSelected },
-            { nameof(OnePrefabIsSelected), OnePrefabIsSelected },
-            { nameof(IsAddedGameObject), IsAddedGameObject },
-            { nameof(GameObjectsAreSelected), GameObjectsAreSelected },
-            { nameof(HasClipboard), HasClipboard },
-            { nameof(CanPasteSpecial), CanPasteSpecial },
-        };
         
         static EditorItemShowCondition()
         {
@@ -38,93 +17,43 @@ namespace TabbyStudios
 
             defaultConditions = Map<string, Func<bool>>.CombineMaps(context, menus);
         }
-        
+
+        public static Map<string, Func<bool>> showMap = new()
+        {
+            { nameof(AnythingSelected), AnythingSelected },
+            { nameof(OneObjectSelected), OneObjectSelected },
+            { nameof(PrefabSelected), PrefabSelected },
+            { nameof(PartOfPrefabSelected), PartOfPrefabSelected },
+            { nameof(OnePrefabIsSelected), OnePrefabIsSelected },
+            { nameof(IsAddedGameObject), IsAddedGameObject },
+        };
+
         public static bool ShouldShow(ItemData data)
         {
-            var condition = defaultConditions.TryGetValue(data.originalPath, out var func) ? func.Method.Name : data.showWhen;
-
-            if (cachedResults.TryGetValue(condition, out var result))
-            {
-                return result;
-            }
-            if (showMap.TryGetValue(condition, out func))
-            {
-                return cachedResults[condition] = func();
-            }
-
-            return true;
-        }
-
-        public static void RefreshSelection()
-        {
-            cachedResults = new();
-            selection = IdWrapper.CreateFromSelection();
+            if (showMap.ContainsKey(data.showWhen))
+                return showMap[data.showWhen]();
             
-            left = ProjectBrowserUtil.IsTwoColumns() && ProjectBrowserUtil.lastBrowserLeftColumnRect.Contains(GUIUtility.GUIToScreenPoint(EditorInputHandler.input.current.mousePosition));
-            if (!left) return;
-            
-            if (ProjectBrowserUtil.lastBrowser is null) return;
+            if (!defaultConditions.ContainsKey(data.originalPath))
+                return true;
 
-            var folderTree = ProjectBrowserUtil.lastBrowser.GetMemberValue("m_FolderTree");
-            if (folderTree is null) return;
-
-            leftColumnSelection = IdWrapper.Create(((Array)folderTree.InvokeMethod("GetSelection")).Cast<object>().ToArray());
-        }
-
-        public static bool FolderSelected()
-        {
-            return correctSelection.Any(id => AssetDatabase.IsValidFolder(AssetDatabase.GetAssetPath(id)));
-        }
-
-        public static bool NotFolderSelected()
-        {
-            return !FolderSelected() && AnythingSelected();
+            return defaultConditions[data.originalPath]();
         }
 
         public static bool AnythingSelected()
         {
-            #if UNITY_6000_3_OR_NEWER
-            var r =  NewAnythingSelected();
-            return r;
-            #else
-            return OldAnythingSelected();
-            #endif
-        }
-        
-        public static bool NewAnythingSelected()
-        {
-            #if UNITY_6000_3_OR_NEWER
-            if (left)
-            {
-                return !leftColumnSelection.IsNullOrEmpty();
-            }
-            else
-            {
-                return !selection.IsNullOrEmpty();
-            }
-            
-            #endif
-            #pragma warning disable CS0162 // Unreachable code detected
-            // ReSharper disable once HeuristicUnreachableCode
-            return false;
-            #pragma warning restore CS0162 // Unreachable code detected
-        }
-
-
-        public static bool OldAnythingSelected()
-        {
-            #pragma warning disable CS0618 // Type or member is obsolete
             var ids = Selection.instanceIDs;
-            #pragma warning restore CS0618 // Type or member is obsolete
             try
             {
-                if (ids.IsNullOrEmpty()) return false;
-                if (ProjectBrowserUtil.lastBrowser is null) return true;
+                if (ProjectBrowserUtil.lastBrowser is null)
+                {
+                    return !ids.IsNullOrEmpty();
+                }
 
                 var left = ProjectBrowserUtil.lastBrowserLeftColumnRect.Contains(GUIUtility.GUIToScreenPoint(EditorInputHandler.input.current.mousePosition));
                 var folderTree = ProjectBrowserUtil.lastBrowser.GetMemberValue("m_FolderTree");
-                if (folderTree is null) return true;
-                
+                if (folderTree is null)
+                    return !ids.IsNullOrEmpty();
+
                 if (!left)
                 {
                     var result = ids.None(id => folderTree.InvokeMethod<bool>("IsSelected", id));
@@ -140,11 +69,6 @@ namespace TabbyStudios
             {
                 return !ids.IsNullOrEmpty();
             }
-            
-            #pragma warning disable CS0162 // Unreachable code detected
-            // ReSharper disable once HeuristicUnreachableCode
-            return false;
-            #pragma warning restore CS0162 // Unreachable code detected
         }
     
         public static bool OneObjectSelected()
@@ -190,17 +114,17 @@ namespace TabbyStudios
 
         public static bool HasParent()
         {
-            return GameObjectsAreSelected() && Selection.activeGameObject?.transform.parent is not null;
+            return AnythingSelected() && Selection.activeGameObject?.transform.parent is not null;
         }
 
         public static bool PrefabSelected()
         {
-            return GameObjectsAreSelected() && Selection.gameObjects.Any(PrefabUtility.IsAnyPrefabInstanceRoot);
+            return AnythingSelected() && Selection.gameObjects.Any(PrefabUtility.IsAnyPrefabInstanceRoot);
         }    
     
         public static bool PartOfPrefabSelected()
         {
-            return GameObjectsAreSelected() && Selection.gameObjects.Any(PrefabUtility.IsPartOfPrefabInstance);
+            return AnythingSelected() && Selection.gameObjects.Any(PrefabUtility.IsPartOfPrefabInstance);
         }
     
         public static bool OnePrefabIsSelected()
@@ -213,9 +137,9 @@ namespace TabbyStudios
             return OneObjectSelected() && PartOfPrefabSelected();
         }
 
-        public static bool GameObjectsAreSelected()
+        private static bool GameObjectsAreSelected()
         {
-            return Selection.activeGameObject is not null;
+            return AnythingSelected() && Selection.activeGameObject is not null;
         }
 
         private static bool ObjectIsDescendedFromPrefab(GameObject obj)
@@ -256,55 +180,6 @@ namespace TabbyStudios
             
             return GetRootAddedObjects(Selection.activeGameObject)?.Any(o => o == Selection.activeGameObject) ?? false;
         }
-
-        public static bool HasClipboard()
-        {
-            return typeof(Unsupported).InvokeStaticMethod<bool>("CanPasteGameObjectsFromPasteboard");
-        }
-
-        public static bool CanPasteSpecial()
-        {
-            return HasClipboard() && GameObjectsAreSelected();
-        }
-
-        #if UNITY_6000_3_OR_NEWER
-        private static void LogSelectionPaths()
-        {
-            var leftNames = leftColumnSelection.Select(id =>
-            {
-                var obj = EditorUtility.EntityIdToObject(id);
-                if (obj == null)
-                {
-                    return "Selection has null obj";
-                }
-
-                string path = AssetDatabase.GetAssetPath(obj);
-                return path.IsNullOrEmpty() ? obj.name : path;
-            }).ToList();
-            if (!leftNames.IsNullOrEmpty())
-            {
-                Debug.Log("Left");
-                leftNames.Log();
-            }
-            
-            var rightNames = selection.Select(id =>
-            {
-                var obj = EditorUtility.EntityIdToObject(id);
-                if (obj == null)
-                {
-                    return "Selection has null obj";
-                }
-
-                string path = AssetDatabase.GetAssetPath(obj);
-                return path.IsNullOrEmpty() ? obj.name : path;
-            }).ToList();
-
-            if (!rightNames.IsNullOrEmpty())
-            {
-                Debug.Log("Right");
-                rightNames.Log();
-            }
-        }
-        #endif
+    
     }
 }

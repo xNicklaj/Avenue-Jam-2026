@@ -11,23 +11,17 @@ namespace WingmanInspector {
     public class WingmanPersistentData : ScriptableObject {
 
         public readonly WingmanClipboard Clipboard = new WingmanClipboard();
-        [SerializeField] private List<long> indexLookUp = new List<long>();
+
+        [SerializeField] private List<int> indexLookUp = new List<int>();
         [SerializeField] private List<string> searchFields = new List<string>();
         [SerializeField] private List<SelectionData> selectedCompIds = new List<SelectionData>();
-        [SerializeField] private List<LockedInspectorRestoreState> lockedInspectorRestoreStates = new List<LockedInspectorRestoreState>();
         
         [Serializable]
         private class SelectionData {
-            public List<long> selectionList = new List<long>();
-        }
-        
-        [Serializable]
-        private class LockedInspectorRestoreState {
-            public long inspectorInstanceId;
-            public Object inspectingObject;
+            public List<int> selectionList = new List<int>();
         }
 
-        public List<long> SelectedCompIds(Object obj) {
+        public List<int> SelectedCompIds(Object obj) {
             if (GetObjectIndex(obj, out int index)) {
                 return selectedCompIds[index].selectionList;
             }
@@ -48,9 +42,9 @@ namespace WingmanInspector {
         }
 
         public void AddDataForContainer(Object obj) {
-            long id = obj.GetId();
+            int id = obj.GetInstanceID();
 
-            // BinarySearch returns index if found in list, or negative bitwise compliment of index if not found
+            // BinarySerach returns index if found in list, or negative bitwise compliment of index if not found
             int index = indexLookUp.BinarySearch(id);
             if (index >= 0) return;
             
@@ -60,45 +54,15 @@ namespace WingmanInspector {
             searchFields.Insert(index, string.Empty);
         }
 
-        public void SetDataForLockedInspector(EditorWindow inspectorWindow, Object inspectingObject) {
-            int entryIndex = -1;
-            for (int i = 0; i < lockedInspectorRestoreStates.Count; i++) {
-                if (lockedInspectorRestoreStates[i].inspectorInstanceId == inspectorWindow.GetId()) {
-                    entryIndex = i;
-                    break;
-                }
-            }
-
-            if (entryIndex == -1) {
-                LockedInspectorRestoreState newState = new LockedInspectorRestoreState();
-                newState.inspectorInstanceId = inspectorWindow.GetId();
-                newState.inspectingObject = inspectingObject;
-                lockedInspectorRestoreStates.Add(newState);
-                return;
-            }
-
-            lockedInspectorRestoreStates[entryIndex].inspectingObject = inspectingObject;
-        }
-
-        public Object GetRestoredObjectForInspectorWindow(EditorWindow inspectorWindow) {
-            foreach (LockedInspectorRestoreState state in lockedInspectorRestoreStates) {
-                if (state.inspectorInstanceId == inspectorWindow.GetId()) {
-                    return state.inspectingObject;
-                }
-            }
-            return null;
-        }
-
         public void ClearAllData() {
             indexLookUp.Clear();
             selectedCompIds.Clear();
             searchFields.Clear();
-            lockedInspectorRestoreStates.Clear();
             AssetDatabase.SaveAssetIfDirty(this);
         }
         
         private bool GetObjectIndex(Object obj, out int index) {
-            index = indexLookUp.BinarySearch(obj.GetId());
+            index = indexLookUp.BinarySearch(obj.GetInstanceID());
             return index >= 0;
         }
         
@@ -106,7 +70,7 @@ namespace WingmanInspector {
         private class Editor : UnityEditor.Editor {
             
             public override void OnInspectorGUI() {
-                GUIStyle labelStyle = new GUIStyle(EditorStyles.label);
+                GUIStyle labelStyle = new(EditorStyles.label);
                 labelStyle.wordWrap = true;
                 
                 EditorGUILayout.LabelField(

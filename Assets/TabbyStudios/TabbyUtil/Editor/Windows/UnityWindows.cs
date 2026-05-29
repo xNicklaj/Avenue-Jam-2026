@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,13 +58,7 @@ namespace TabbyStudios
         
         public static T GetWindow<T>() where T : EditorWindow
         {
-            return (T)GetWindow(typeof(T));
-        }
-
-        public static EditorWindow GetWindow(Type t)
-        {
-            if (t is null) return null;
-            return GetWindows().FirstOrDefault(t.IsInstanceOfType);
+            return GetWindows().OfType<T>().FirstOrDefault();
         }
         
         public static List<EditorWindow> GetWindows(Window window)
@@ -82,6 +78,12 @@ namespace TabbyStudios
         {
             return Resources.FindObjectsOfTypeAll<EditorWindow>().ToList();
         }
+
+        //test this
+        // public static EditorWindow LastFocused<T>() where T : EditorWindow
+        // {
+        //     return focusMap.GetValueOrDefault(typeof(T).Name, null)?.Target() ?? GetWindow<T>();
+        // }
         
         public static EditorWindow LastFocused(Window window)
         {
@@ -137,3 +139,5 @@ namespace TabbyStudios
         
     }
 }
+
+#endif

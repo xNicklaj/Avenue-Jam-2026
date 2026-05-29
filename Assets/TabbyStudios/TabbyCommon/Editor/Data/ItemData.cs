@@ -42,7 +42,7 @@ namespace TabbyStudios
         public string autoDisplayName => path.RemoveBeforeLast("/");
         
         public bool IsChildPath(string childPath) => childPath.Contains(path + "/") || childPath == path;
-        public bool hasChildren => node is { } n ? n.Children().Where(c => !c.data.deleted).Count() > 0 : false;
+        public bool hasChildren => node.Children().Where(c => !c.data.deleted).Count() > 0;
         public string key => path.Split("/").Last();
 
         public ItemData Copy()

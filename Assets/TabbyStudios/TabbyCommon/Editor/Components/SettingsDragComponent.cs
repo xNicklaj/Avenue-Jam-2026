@@ -6,7 +6,7 @@ namespace TabbyStudios
 {
     public class SettingsDragComponent : VisualComponent
     {
-        public static bool mustHoldKey => Config.instance.GetBool("holdKeyToReorder");
+        public static bool mustHoldKey => Config.GetSetting<bool>("holdKeyToReorder");
     
         public MenuDragManager dragger;
         public CustomMenuEntry entry;
@@ -38,8 +38,9 @@ namespace TabbyStudios
         
         public void StartDragging(Vector2 position)
         {
+            target.CaptureMouse();
             isDragging = true;
-            target.SetSize(target.UnscaledSize()*Config.instance.GetFloat("settingsMenuZoom"));
+            target.SetSize(target.UnscaledSize()*Config.GetSetting<float>("settingsMenuZoom"));
             dragger = target.GetComponentUpwards<MenuDragManager>();
             dragger.dragElement = target;
             itemList = dragger.target.FirstComponent<TabbyScrollView>();
@@ -49,11 +50,7 @@ namespace TabbyStudios
                 comp.blockOpen = true;
             }
 
-            var _item = GetComponent<Item>();
-            if (_item is not null)
-            {
-                _item.lockColor = true;
-            }
+            GetComponent<Item>().lockColor = true;
             
             InitFake();
         
@@ -67,10 +64,10 @@ namespace TabbyStudios
         
             dragArea = fake.Root().WhereComponent<CustomMenu>().First(c => c.Q().Contains(fake));
             dragArea.Add(target);
-            
+        
             UpdateTargetPosition(position);
-            
-            target.CaptureMouse();
+            EditorUtil.UpdateDelayCall(1, () => UpdateTargetPosition(position));
+            EditorUtil.UpdateDelayCall(2, () => UpdateTargetPosition(position));
         }
         
         public override void OnMouseUp(MouseUpEvent e)
@@ -86,18 +83,13 @@ namespace TabbyStudios
             var afterData = sa?.GetComponentUpwards<CustomMenuEntry>()?.data;
             
             if(beforeData != null || afterData !=  null)
-                Profiles.instance.menuSerializer.Reorder(entry.data, beforeData, afterData);
+                MenuDataSerializer.Reorder(entry.data, beforeData, afterData);
         }
         
         public void StopDragging()
         {
             isDragging = false;
-            
-            var _item = GetComponent<Item>();
-            if (_item is not null)
-            {
-                _item.lockColor = true;
-            }
+            GetComponent<Item>().lockColor = false;
             
             foreach(var comp in target.Root().SelectComponent<SettingsItemComponent>())
             {
@@ -106,7 +98,7 @@ namespace TabbyStudios
         
             target.parent.Remove(target);
             target.style.position = Position.Relative;
-            target.SetPosition(Vector2.zero);
+            target.transform.position = Vector3.zero;
             fake.parent.Add(target);
             target.PlaceBehind(fake);
             fake.parent.Remove(fake);
@@ -119,7 +111,7 @@ namespace TabbyStudios
             after = FindAfter();
             before = FindBefore();
             
-            if(target.GetPosition().y >= 0)
+            if(target.transform.position.y >= 0)
             {
                 if (after is null)
                 {
@@ -154,7 +146,7 @@ namespace TabbyStudios
             ReorderVisualElements();
             var y = position.y + itemList.GetComponent<TabbyScrollView>().offset;
             var offset = dragArea.WorldPosition().y + 4;
-            target.SetPosition(new Vector3(target.LocalPosition().x + 10*target.Scale() ,(y-offset)/target.Scale() - target.Height()/2));
+            target.transform.position = new Vector3(target.LocalPosition().x + 10*target.Scale() ,(y-offset)/target.Scale() - target.Height()/2,0);
         }
         
         private VisualElement FindAfter()

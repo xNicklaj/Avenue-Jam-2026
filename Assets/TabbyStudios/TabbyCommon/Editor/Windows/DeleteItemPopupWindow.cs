@@ -6,7 +6,7 @@ namespace TabbyStudios
         
         public override void Confirm()
         {
-            Profiles.instance.menuSerializer.SetPropertyRecursively(item, data => data.deleted = true);
+            MenuDataSerializer.SetPropertyRecursively(item, data => data.deleted = true);
         }
 
         public override string ConfirmationText()

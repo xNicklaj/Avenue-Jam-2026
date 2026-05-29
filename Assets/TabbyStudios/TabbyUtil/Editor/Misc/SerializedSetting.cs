@@ -19,8 +19,7 @@ namespace TabbyStudios
         public override void Start()
         {
             t = GetT();
-            var displayValue = Config.instance.Subscribe<T>(setting, OnExternalChange);
-            t.value = displayValue;
+            t.value = Config.Subscribe<T>(setting, OnExternalChange);
             target.RegisterCallback<ChangeEvent<T>>(OnChange);
         }
         
@@ -41,7 +40,7 @@ namespace TabbyStudios
             if (target?.focusController?.focusedElement != target)
             {
                 T validated = Validate(queuedValue);
-                Config.instance.SetObject(setting, validated);
+                Config.SetSetting(setting,validated);
                 isWaitingToApply = false; 
             }
             else
@@ -72,20 +71,14 @@ namespace TabbyStudios
             //Assert.NotNull(result, $"Broken ValueChanger at {target.name}");
             return result;
         }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
-            Config.instance.Unsubscribe<T>(setting, OnExternalChange);
-        }
+    
     }
 
     public class BoolSetting : SerializedSetting<bool>
     {
         public override void OnChange(ChangeEvent<bool> e)
         {
-            Config.instance.Set(setting, e.newValue);
-            //Config.SetSetting(setting, e.newValue);
+            Config.SetSetting(setting, e.newValue);
         }
     }
     
@@ -117,7 +110,7 @@ namespace TabbyStudios
     {
         public override void OnChange(ChangeEvent<float> e)
         {
-            Config.instance.Set(setting, e.newValue);
+            Config.SetSetting(setting, e.newValue);
         }
         
     }

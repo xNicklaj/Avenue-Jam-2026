@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TabbyStudios
@@ -21,7 +20,6 @@ namespace TabbyStudios
         public override void Start()
         {
             base.Start();
-            target.style.backgroundColor = UnityColors.randomBorder;
             ForceHideNext();
         }
 

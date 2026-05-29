@@ -27,7 +27,7 @@ namespace TabbyStudios
         public static Vector2 PositionIgnoringEditorWindowTabBar(this VisualElement e)
         {
             //position seems correct independent of scale
-            return GetPosition(e);
+            return e.transform.position;
         }
         
         public static Vector2 ScreenPosition(this VisualElement e)
@@ -63,9 +63,7 @@ namespace TabbyStudios
     
         public static void SetScale(this VisualElement e, float scale)
         {
-            #pragma warning disable CS0618 // Type or member is obsolete
             e.transform.scale = new Vector3(scale,scale, 0);
-            #pragma warning restore CS0618 // Type or member is obsolete
         }
     
         public static float ScaledValue(this VisualElement e, float value)
@@ -215,6 +213,8 @@ namespace TabbyStudios
             return e.resolvedStyle.marginTop * e.Scale();
         }
         
+        
+        
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         public static void SetPadding(this VisualElement e, float value)
@@ -331,10 +331,10 @@ namespace TabbyStudios
         
         public static void AssertPadding(this VisualElement e)
         {
-            // var style = e.resolvedStyle;
-            // Assert.AreEqual(style.paddingTop,style.paddingBottom);
-            // Assert.AreEqual(style.paddingTop,style.paddingLeft);
-            // Assert.AreEqual(style.paddingTop,style.paddingRight);
+            var style = e.resolvedStyle;
+            Assert.AreEqual(style.paddingTop,style.paddingBottom);
+            Assert.AreEqual(style.paddingTop,style.paddingLeft);
+            Assert.AreEqual(style.paddingTop,style.paddingRight);
         }
         
         public static void AssertPaddingX(this VisualElement e)
@@ -526,20 +526,6 @@ namespace TabbyStudios
             {
                 SetTreeToAbsolute(child);
             }
-        }
-
-        public static void SetPosition(this VisualElement e, Vector2 pos)
-        {
-            #pragma warning disable CS0618 // Type or member is obsolete
-            e.transform.position = pos;
-            #pragma warning restore CS0618 // Type or member is obsolete
-        }
-
-        public static Vector2 GetPosition(this VisualElement e)
-        {
-            #pragma warning disable CS0618 // Type or member is obsolete
-            return e.transform.position;
-            #pragma warning restore CS0618 // Type or member is obsolete
         }
         
         private static void SetElementToAbsolute(VisualElement element)

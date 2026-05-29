@@ -247,20 +247,10 @@ namespace TabbyStudios
         {
             return s is null or "";
         }
-
-        public static string IfNullOrEmpty(this string s, string fallback)
-        {
-            return s.IsNullOrEmpty() ? fallback : s;
-        }
         
         public static string RemoveDigits(this string s)
         {
             return new string(s.Where(c => !char.IsDigit(c)).ToArray());
-        }
-
-        public static string FixSlashes(this string s)
-        {
-            return s.ReplaceMultiple("\\", "/");
         }
     
         public static string Uncapitalize(this string s) => string.IsNullOrEmpty(s) ? s : char.ToLower(s[0]) + s.Substring(1);

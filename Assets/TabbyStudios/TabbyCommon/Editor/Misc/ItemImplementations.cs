@@ -122,7 +122,7 @@ namespace TabbyStudios
 
         private static void OnObjectPickerUpdate()
         {
-            //this is not quite the same as the default
+            //todo this is not quite the same as the default
             GameObject selectedPrefab = EditorGUIUtility.GetObjectPickerObject() as GameObject;
             if (selectedPrefab != null && targetInstance != null)
             {

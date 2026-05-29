@@ -39,7 +39,7 @@ namespace TabbyStudios
 
             if (e.newValue.IsNullOrEmpty())
             {
-                if (!Config.instance.GetBool(nameof(alwaysShowSearchBar)))
+                if (!Config.GetSetting<bool>(nameof(alwaysShowSearchBar)))
                 {
                     HideBar();
                 }

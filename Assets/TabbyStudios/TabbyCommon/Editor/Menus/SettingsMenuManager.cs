@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace TabbyStudios
 {
-    public class SettingsMenuManager : MenuManager, FastCacheSearch, IDisposable
+    public class SettingsMenuManager : MenuManager
     {
         private static string xmlName = "CustomMenu";
         
@@ -15,15 +13,17 @@ namespace TabbyStudios
 
         private VisualElement menuContainer;
         public List<string> menuPaths = new();
+        public bool fixLastItem = false;
+
         private bool showAsPreview;
-        
+    
         public SettingsMenuManager(VisualElement root)
         {
-            menuContainer = root.FindComponent<MenuCustomizationContainer>().target;
-            Config.instance.Subscribe<bool>("previewButton", Refresh2);
-            Config.instance.Subscribe<float>("settingsMenuZoom", SetScale);
-            SetScale(Config.instance.GetFloat("settingsMenuZoom"));
-            Config.instance.Subscribe<bool>("expandTopLevelMenus", Refresh3);
+            menuContainer = root.Q("SettingsMenuContainer");
+            Config.Subscribe<bool>("previewButton", Refresh2);
+            Config.Subscribe<float>("settingsMenuZoom", SetScale, callImmediately:true);
+            Config.Subscribe<bool>("onMenusModified", Refresh2);
+            Config.Subscribe<bool>("expandTopLevelMenus", Refresh3);
         }
         
         public CustomMenu CreateMenu(string path, Vector2 relativePos)
@@ -32,7 +32,7 @@ namespace TabbyStudios
             var menuElement = xml.First("CustomMenu");
             var provider = menuElement.AddComponent<SettingsItemProvider>();
             var menu = menuElement.AddComponent<CustomMenu>(this, path ,provider);
-            xml.SetSize(Config.instance.GetInt("maxMenuWidth"), Config.instance.GetInt("maxMenuHeight"));
+            xml.SetSize(Config.GetSetting<int>("maxMenuWidth"), Config.GetSetting<int>("maxMenuHeight"));
             menuContainer.AddElement(xml);
             
             if (ExtraData.nonCustomizablePaths.Contains(path))
@@ -51,6 +51,7 @@ namespace TabbyStudios
             }
             
             var layout = xml.SelectFirstComponent<CustomMenuLayout>();
+            layout.shouldFixLastItem = false;
             layout.Calculate();
             
             menus.Add(menu);
@@ -91,48 +92,30 @@ namespace TabbyStudios
         {
             menuPaths = menus.Select(m => m.path).ToList();
             
-            var someData = menus.Select(m => (m.path, m.target.resolvedStyle.left, m.target.resolvedStyle.top)).ToList();
+            #if UNITY_2022_1_OR_NEWER
+            //Assert.IsFalse(menuPaths.IsNullOrEmpty());
+            #else
+            if (menus.Any(m => m.target.ContainingWindow() is null))
+                return; //this window probably leaked
+            #endif
+
+            var someData = menus.Select(m => (m.path, m.target.resolvedStyle.left, m.target.resolvedStyle.top));
+
             ClearMenus();
 
             for (int i = 0; i < menuPaths.Count; i++)
             {
                 var path = menuPaths[i];
-                if (Profiles.instance.menuSerializer.allMenus.Find(path) is not null)
-                {
-                    
-                    var newX = menus.IsNullOrEmpty() ? 0 : menus.Max(m => m.target.style.left.value.value + m.target.style.width.value.value);
-                    var newY = someData.FirstOrDefault(d => d.path == path) is { } dd ? dd.top : 0;
-                    var newPos = new Vector2(newX, newY);
-
-                    CreateMenu(path, newPos);
-                }
+                if(typeof(MenuDataSerializer).GetFieldValue<DataNode>("allMenus").Find(path) is not null)
+                    CreateMenu(path, new Vector2(someData.FirstOrDefault(d => d.path == path) is {} d ? d.left : 0,
+                        someData.FirstOrDefault(d => d.path == path) is {} dd ? dd.top : 0));
             }
+            
         }
 
         public static void StaticRefresh()
         {
-            (UnityWindows.GetWindow(TabbyAssets.settingsPage).rootVisualElement.SelectFirstOrDefaultComponent<CustomMenu>()?.manager as SettingsMenuManager)?.Refresh();
-        }
-
-        public static void StaticReset()
-        {
-            (UnityWindows.GetWindow(TabbyAssets.settingsPage).rootVisualElement.SelectFirstOrDefaultComponent<CustomMenu>()?.manager as SettingsMenuManager)?.Reset();
-        }
-
-        public void Reset()
-        {
-            menuPaths = menus.Select(m => m.path).ToList();
-            //MysteriousAssertion();
-            
-            var someData = menus.Select(m => (m.path, m.target.resolvedStyle.left, m.target.resolvedStyle.top));
-            ClearMenus();
-
-            int i = 0;
-            var path = menuPaths[i];
-            if (Profiles.instance.menuSerializer.allMenus.Find(path) is not null)
-                CreateMenu(path, new Vector2(someData.FirstOrDefault(d => d.path == path) is { } d ? d.left : 0,
-                    someData.FirstOrDefault(d => d.path == path) is { } dd ? dd.top : 0));
-            
+            (UnityWindows.GetWindow<SettingsPage>().rootVisualElement.SelectFirstComponent<CustomMenu>().manager as SettingsMenuManager).Refresh();
         }
 
         public void Refresh2(bool _)
@@ -173,6 +156,7 @@ namespace TabbyStudios
 
         private void BlockCustomization(VisualElement xml, string path)
         {
+            //todo can't block moved menu
             xml.FirstComponent<AbstractScroller>().SetBorder(8, new Color(1,1,0,0.5f));
             
             xml.RegisterCallback<MouseDownEvent>(evt => 
@@ -189,25 +173,7 @@ namespace TabbyStudios
 
         private float GetScrollLevel(CustomMenu menu)
         {
-            var key = $"{menu.path}_scroll_level";
-            return Config.instance.HasKey(key) ? Config.instance.GetFloat(key) : 0;
-        }
-
-        private void MysteriousAssertion()
-        {
-            #if UNITY_2022_1_OR_NEWER
-            Assert.IsFalse(menuPaths.IsNullOrEmpty());
-            #else
-            if (menus.Any(m => m.target.ContainingWindow() is null))
-                return; //this window probably leaked
-            #endif
-        }
-
-        public void Dispose()
-        {
-            Config.instance.Unsubscribe<bool>("previewButton", Refresh2);
-            Config.instance.Unsubscribe<float>("settingsMenuZoom", SetScale);
-            Config.instance.Unsubscribe<bool>("expandTopLevelMenus", Refresh3);
+            return Config.GetSettingOrDefault<float>($"{menu.path}_scroll_level");
         }
     }
 }

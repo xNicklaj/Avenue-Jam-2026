@@ -1,235 +1,227 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using UnityEditor;
+using UnityEditor.Compilation;
 using UnityEngine;
 
 namespace TabbyStudios
-{
-    [InitializeOnLoad]
-    public class Config
-    {
-        public static Config instance { get; }
+ {
+     [Serializable]
+     public class Config : ISerializationCallbackReceiver
+     {
+         [SerializeField] 
+         private ConfigDictionary values;
+         private Dictionary<string, ConfigCall> calls = new();
+         private static int saveQueue;
+         
+         private static string path = TabbyFiles.configPath;
+         private static Config _instance;
+         public static Config instance
+         {
+             get
+             {
+                 if (_instance is null)
+                 {
+                     _instance = SafeJson.FromPath<Config>(path);
+                     Save();
+                 }
+                     
+                 
+                 return _instance;
+             }
+         }
+         
+         public static void SetSetting(string name, object value)
+         {
+             if(!HasSetting(name))
+                 InsertSetting(name,value);
+             
+             instance.values[name] = value;
+             Save();
+             instance.calls[name].Invoke(value);
+         }
 
-        public string id;
-        private Map<string, List<object>> calls = new();
-        private string GetKey(string key) => $"{id}_{key}";
+         public static void SetSettingWithoutSave(string name, object value)
+         {
+             if (!HasSetting(name))
+                 InsertSetting(name, value);
 
-        static Config()
-        {
-            var config = "__tabby_preferences";
-            if (!EditorPrefs.HasKey(config))
-            {
-                EditorPrefs.SetString(config, "tabbyPreferences");
-            }
-            
-            instance = new Config();
-        }
+             instance.values[name] = value;
+             instance.calls[name].Invoke(value);
+         }
 
-        public Config(string id)
-        {
-            this.id = id;
-            Init();
-        }
-        
-        public Config()
-        {
-            id = EditorPrefs.GetString("__tabby_preferences");
-            Init();
-        }
+         public static void SetSettingDelayed(string name, object value)
+         {
+             if (!HasSetting(name))
+                 InsertSetting(name, value);
 
-        private void Init()
-        {
-            foreach (var pair in GetDefaults())
-            {
-                var key = GetKey(pair.Key);
-                if (!EditorPrefs.HasKey(key))
-                {
-                    var val = pair.Value;
-                    if (val is bool b) EditorPrefs.SetBool(key, b);
-                    else if (val is string s) EditorPrefs.SetString(key, s);
-                    else if (val is int i) EditorPrefs.SetInt(key, i);
-                    else if (val is float f) EditorPrefs.SetFloat(key, f);
-                    else throw new Exception($"Key {key} had value {val ?? "<null>"} unsupported type {val?.GetType()}");
-                }
-            }
-        }
-        
-        public void Export(string folder)
-        {
-            var defaultMap = GetDefaults();
-            var map = new ConfigDictionary();
+             instance.values[name] = value;
+             DelayedSave();
+             instance.calls[name].Invoke(value);
+         }
+         
+         private static void InsertSetting(string name, object value)
+         {
+             instance.values[name] = value;
+             instance.calls[name] = new ConfigCall();
+         }
+         
+         public static T GetSetting<T>(string name)
+         {
+             try
+             {
+                 if (typeof(T).IsPrimitive || typeof(T) == typeof(string))
+                 {
+                     return (T)instance.values[name];
+                 }
+                 
+                 return SafeJson.FromJson<T>(instance.values[name].ToString());
+             }
+             
+             catch (InvalidCastException)
+             {
+                 return (T)(object)Convert.ToInt32(instance.values[name]);
+             }
+         }
+         
+         public static T GetSettingOrDefault<T>(string name)
+         {
+             return HasSetting(name) ? GetSetting<T>(name) : default;
+         }
 
-            foreach (var pair in defaultMap)
-            {
-                var k = GetKey(pair.Key);
-                var val = pair.Value;
-                if (val is bool) map.Set(pair.Key, EditorPrefs.GetBool(k));
-                else if (val is string) map.Set(pair.Key, EditorPrefs.GetString(k));
-                else if (val is int) map.Set(pair.Key, EditorPrefs.GetInt(k));
-                else if (val is float) map.Set(pair.Key, EditorPrefs.GetFloat(k));
-            }
+         public static bool HasSetting(string name)
+         {
+             return instance.values.dict.ContainsKey(name);
+         }
+         
+         public static void Flip(string name)
+         {
+             SetSetting(name, !GetSetting<bool>(name));
+         }
+         
+         public static T Subscribe<T>(string name, Action<T> call)
+         {
+             instance.calls[name].Add(call);
+             return GetSetting<T>(name);
+         }
+         
+         public static T SubscribeAndCall<T>(string name, Action<T> call)
+         {
+             var setting = Subscribe(name, call);
+             call(setting);
+             return setting;
+         }
+         
+         public static T Subscribe<T>(string name, Action<T> call, bool callImmediately)
+         {
+             return callImmediately ? SubscribeAndCall(name, call) : Subscribe(name, call);
+         }
+         
+         public static void Unsubscribe<T>(string name, Action<T> call)
+         {
+             instance.calls[name].Remove(call);
+         }
+         
+         public static void Save()
+         {
+             TabbyFiles.SafeWrite(path, SafeJson.ToJson(instance));
+         }
+         
+         public static void DelayedSave()
+         {
+             saveQueue++;
+             RunAsync.Fire(1000, () =>
+             {
+                 if (saveQueue == 1)
+                 {
+                     saveQueue = 0;
+                     Save();
+                 }
+                 else
+                 {
+                     saveQueue--;
+                 }
+             });
+         }
+         
+         public static void NewConfig()
+         {
+             TabbyFiles.DeleteFile(path);
+             
+             var newConfig = SafeJson.FromJson<Config>("");
+             GC.Collect();
+             RemoveGarbage();
+             newConfig.calls = instance.calls;
+             _instance = newConfig;
+             
+             var entries = new List<KeyValuePair<string, object>>(newConfig.values.dict);
+             foreach (var value in entries)
+             {
+                 try
+                 {
+                     SetSetting(value.Key, value.Value); //trigger subscribers
+                 }
+                 catch
+                 {
+                     CompilationPipeline.RequestScriptCompilation(RequestScriptCompilationOptions.None); //probably leaked calls, reload domain to get rid of them
+                 }
+             }
+             
+             Save();
+         }
 
-            var path = $"{folder}/{id}.json";
-            File.WriteAllText(path, SafeJson.ToJson(map));
-            Debug.Log($"Preferences file exported to {path}");
-        }
+         public static void NewConfigDontNotify()
+         {
+             TabbyFiles.DeleteFile(path);
+             _instance = SafeJson.FromJson<Config>("");
+             Save();
+         }
 
-        public void Import(string path)
-        {
-            var map = SafeJson.FromPath<ConfigDictionary>(path);
-            foreach (var (key, val) in map)
-            {
-                SetObject(key, val);
-            }
+         public static void NotifyAll()
+         {
+             foreach (var pair in instance.calls)
+             {
+                 var call = pair.Value;
+                 var name = pair.Key;
+                 call.Invoke(GetSetting<object>(name));
+             }
+         }
 
-            Debug.Log($"Imported preferences file from {path}");
-        }
-        
-        public void ResetDefaults()
-        {
-            foreach (var pair in GetDefaults())
-            {
-                SetObject(pair.Key, pair.Value);
-            }
-        }
+         public void OnBeforeSerialize()
+         {
+             
+         }
+         
+         public void OnAfterDeserialize()
+         {
+             if (values is null)
+             {
+                 values = new ConfigDictionary();
+                 values.Init();
+             }
+             calls = InitCalls();
+         }
+         
+         public static void RemoveGarbage()
+         {
+             instance.calls.ForEach(c => c.Value.RemoveGarbage());
+         }
+         
+         private Dictionary<string, ConfigCall> InitCalls()
+         {
+             return new(values.dict.Keys.Select(name => new KeyValuePair<string, ConfigCall>(name, new ConfigCall())));
+         }
+         
+         public static int TotalStorage()
+         {
+             RemoveGarbage();
+             return instance.calls.Sum(kv => kv.Value.Count());
+         }
 
-        public Map<string, object> GetDefaults()
-        {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name.StartsWith("Tabby"));
-            var types = assemblies.SelectMany(a => a.GetTypes()).ToList();
-            var fields = types.SelectMany(t => t.GetFieldInfos()).Where(f => f.GetCustomAttributes(typeof(SettingAttribute)).Any()).ToList();
-            var tuples = fields.Select(f => (f, f.GetCustomAttributes<SettingAttribute>().First())).ToList();
-            var result = new Map<string, object>(tuples.Select(t => new KeyValuePair<string, object>(t.f.Name, t.Item2.defaultValue)));
-            return result;
-        }
-
-        public bool GetBool(string key)
-        {
-            return EditorPrefs.GetBool(GetKey(key));
-        }
-
-        public string GetString(string key)
-        {
-            return EditorPrefs.GetString(GetKey(key));
-        }
-
-        public int GetInt(string key)
-        {
-            return EditorPrefs.GetInt(GetKey(key));
-        }
-
-        public float GetFloat(string key)
-        {
-            return EditorPrefs.GetFloat(GetKey(key));
-        }
-
-        public T Get<T>(string key)
-        {
-            var type = typeof(T);
-            if (type == typeof(bool)) return (T)(object)GetBool(key);
-            if (type == typeof(string)) return (T)(object)GetString(key);
-            if (type == typeof(int)) return (T)(object)GetInt(key);
-            if (type == typeof(float)) return (T)(object)GetFloat(key);
-            throw new Exception($"Unsupported type {type.Name} on get {key}");
-        }
-        
-        public void Set(string key, bool value)
-        {
-            var k = GetKey(key);
-            //Assert.IsTrue(EditorPrefs.HasKey(k));
-            EditorPrefs.SetBool(k, value);
-            InvokeCalls(key, value);
-        }
-
-        public void Set(string key, string value)
-        {
-            var k = GetKey(key);
-            //Assert.IsTrue(EditorPrefs.HasKey(k));
-            EditorPrefs.SetString(k, value);
-            InvokeCalls(key, value);
-        }
-
-        public void Set(string key, int value)
-        {
-            var k = GetKey(key);
-            //Assert.IsTrue(EditorPrefs.HasKey(k));
-            EditorPrefs.SetInt(k, value);
-            InvokeCalls(key, value);
-        }
-
-        public void Set(string key, float value)
-        {
-            var k = GetKey(key);
-            //Assert.IsTrue(EditorPrefs.HasKey(k));
-            EditorPrefs.SetFloat(k, value);
-            InvokeCalls(key, value);
-        }
-
-        public void SetObject(string key, object value)
-        {
-            if (value is bool b) Set(key, b);
-            else if (value is string s) Set(key, s);
-            else if (value is int i) Set(key, i);
-            else if (value is float f) Set(key, f);
-            else throw new Exception($"Key {key} had value {value ?? "<null>"} unsupported type {value?.GetType()}");
-        }
-
-        public void Delete(string key)
-        {
-            EditorPrefs.DeleteKey(GetKey(key));
-            calls.Remove(key);
-        }
-
-        private void InvokeCalls(string key, object value)
-        {
-            if (calls.TryGetValue(key, out var list))
-            {
-                foreach (var call in list)
-                {
-                    call.InvokeMethod("Invoke", value);
-                }
-            }
-        }
-
-        public T Subscribe<T>(string key, Action<T> call)
-        {
-            var list = calls.GetOrInsert(key, () => new());
-            list.Add(call);
-            return Get<T>(key);
-        }
-
-        public void Unsubscribe<T>(string key, Action<T> call)
-        {
-            if (calls.TryGetValue(key, out var list))
-            {
-                list.Remove(call);
-            }
-        }
-        
-        public void Clear()
-        {
-            foreach (var pair in GetDefaults())
-            {
-                EditorPrefs.DeleteKey(GetKey(pair.Key));
-            }
-        }
-
-        public bool HasKey(string key)
-        {
-            return EditorPrefs.HasKey(GetKey(key));
-        }
-
-        public void Flip(string key)
-        {
-            Set(key, !GetBool(key));
-        }
-
-        public int TotalCalls()
-        {
-            return calls.Sum(pair => pair.Value.Count);
-        }
-    }
-}
+         public static string GetString(string name) => GetSetting<string>(name);
+         public static bool GetBool(string name) => GetSetting<bool>(name);
+         public static int GetInt(string name) => GetSetting<int>(name);
+         public static float GetFloat(string name) => GetSetting<float>(name);
+     }
+     
+ }
