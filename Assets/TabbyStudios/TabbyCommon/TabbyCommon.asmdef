@@ -1,0 +1,19 @@
+{
+    "name": "TabbyCommon",
+    "rootNamespace": "",
+    "references": [
+        "GUID:af6999344e3cad2449aedd809e66d9c9",
+        "GUID:a7f4c6645b61572439da2569da9e0c41"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

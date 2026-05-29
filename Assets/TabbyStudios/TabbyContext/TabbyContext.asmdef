@@ -1,0 +1,22 @@
+{
+    "name": "TabbyContext",
+    "rootNamespace": "TabbyContext",
+    "references": [
+        "GUID:af6999344e3cad2449aedd809e66d9c9",
+        "GUID:a7f4c6645b61572439da2569da9e0c41",
+        "GUID:c77d30e333848fd4684dd24f804f1eed"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "0Harmony.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

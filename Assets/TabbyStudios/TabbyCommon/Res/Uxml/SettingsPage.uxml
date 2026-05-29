@@ -1,0 +1,59 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Template name="MenusTabContent" src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uxml/MenusTabContent.uxml?fileID=9197481963319205126&amp;guid=7d2a0f40669da4249a846e559aef499d&amp;type=3#MenusTabContent"/>
+    <Template name="PreferencesTabContent" src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uxml/PreferencesTabContent.uxml?fileID=9197481963319205126&amp;guid=ae7f28095f0f4cd41a9eda7e542abafa&amp;type=3#PreferencesTabContent"/>
+    <Template name="WelcomeTabContent" src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uxml/WelcomeTabContent.uxml?fileID=9197481963319205126&amp;guid=d7265b623429bdd4f9103cc9241fbae4&amp;type=3#WelcomeTabContent"/>
+    <Style src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uss/SettingsPageStyles.uss?fileID=7433441132597879392&amp;guid=68f2b5a151d65044ea314bb0832c6d13&amp;type=3#SettingsPageStyles"/>
+    <VisualElement name="VisualElement" style="flex-grow: 1;">
+        <VisualElement name="Core" class="content-container" style="flex-shrink: 1; display: flex; visibility: visible;">
+            <VisualElement name="LeftPanel" style="flex-grow: 0; flex-shrink: 0;">
+                <VisualElement name="TabbyContext" class="header" style="display: flex; visibility: visible; flex-shrink: 0; height: 80px; padding-bottom: 12px; border-bottom-width: 1px; border-right-width: 1px;">
+                    <Image name="logo-image" class="logo" style="display: none; visibility: hidden;"/>
+                    <Label text="Tabby Context" enable-rich-text="true" class="title"/>
+                </VisualElement>
+                <VisualElement name="ButtonGroup" class="action-panel" style="flex-shrink: 0; padding-top: 20px; padding-right: 20px; padding-bottom: 12px; padding-left: 20px; flex-grow: 1;">
+                    <Label text="About" class="panel-title"/>
+                    <Button text="Getting Started" name="GetStartedButton-DocumentationButton" class="main-button">
+                        <Image class="button-icon"/>
+                    </Button>
+                    <Button text="Import Examples" name="ImportExamplesButton-" class="main-button" style="display: none; visibility: hidden;">
+                        <Image class="button-icon"/>
+                    </Button>
+                    <Button text="Join Discord" name="JoinDiscord-DiscordButton" class="main-button">
+                        <Image class="button-icon"/>
+                    </Button>
+                    <Button text="More by Tabby Studios" name="MoreByTabbyStudiosButton-" class="main-button">
+                        <Image class="button-icon"/>
+                    </Button>
+                    <Label text="Tabs" name="Settings" class="panel-title"/>
+                    <VisualElement name="TabGroup-" style="flex-grow: 1;">
+                        <Button text="What&#39;s new" name="WelcomeTab-TabButton" class="main-button">
+                            <Image class="button-icon"/>
+                        </Button>
+                        <Button text="Menus" name="MenusTab-TabButton" class="main-button">
+                            <Image class="button-icon"/>
+                        </Button>
+                        <Button text="Preferences" name="PreferencesTab-TabButton" class="main-button">
+                            <Image class="button-icon"/>
+                        </Button>
+                    </VisualElement>
+                    <VisualElement name="Space" class="spacer"/>
+                </VisualElement>
+            </VisualElement>
+            <VisualElement name="TabContentContainer-" class="whats-new-panel" style="flex-shrink: 1; flex-grow: 1;">
+                <Instance template="WelcomeTabContent" name="WelcomeTabContent"/>
+                <Instance template="MenusTabContent" style="flex-shrink: 0;"/>
+                <Instance template="PreferencesTabContent"/>
+            </VisualElement>
+        </VisualElement>
+        <VisualElement name="VisualElement" class="footer" style="align-self: auto; display: flex; visibility: visible; flex-shrink: 0;">
+            <Label text="Version" name="VersionLabel-" class="version-text" style="margin-top: 2px; margin-left: 4px; justify-content: center; align-self: center;"/>
+            <VisualElement class="footer-links">
+                <Button text="Documentation" name="DocumentationFooterButton-DocumentationButton" class="footer-link"/>
+                <Label text="&#8226;" class="footer-separator"/>
+                <Button text="Support" name="FooterSupportButton-DiscordButton" class="footer-link"/>
+                <Label text="&#8226;" class="footer-separator"/>
+                <Button text="Contact" name="FooterContactButton-DiscordButton" class="footer-link"/>
+            </VisualElement>
+        </VisualElement>
+    </VisualElement>
+</UXML>

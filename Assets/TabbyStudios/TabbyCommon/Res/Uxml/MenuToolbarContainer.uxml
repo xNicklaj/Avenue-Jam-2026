@@ -1,0 +1,30 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uss/ToolbarStyles.uss?fileID=7433441132597879392&amp;guid=a12e055c1d8571d4da06b24856a426da&amp;type=3#ToolbarStyles"/>
+    <VisualElement name="MenuToolbarContainer-" class="toolbar-container" style="flex-shrink: 0;">
+        <VisualElement name="OtherButtons" class="top-toolbar" style="flex-grow: 0; flex-direction: row; align-items: center;">
+            <Label name="CurrentProfileLabel" text="Current Profile:" class="profile-label" style="display: flex;"/>
+            <DropdownField name="CurrentProfileDropdown-" style="-unity-text-align: upper-right; max-width: 150px; min-width: 150px; flex-direction: row; justify-content: flex-start;"/>
+            <VisualElement name="ProfileButtons-" enabled="true" style="flex-grow: 0; flex-direction: row; justify-content: space-between;">
+                <Button name="NewProfileButton-" tooltip="New Profile" style="background-image: url(&quot;project://database/Assets/TabbyStudios/TabbyCommon/Res/Icons/plus.png?fileID=2800000&amp;guid=ab794c936d892fc409141b374f674725&amp;type=3#plus&quot;); width: 24px; height: 24px; visibility: visible; display: flex;"/>
+                <Button name="DeleteProfileButton-" tooltip="Delete Current Profile" style="background-image: url(&quot;project://database/Assets/TabbyStudios/TabbyCommon/Res/Icons/trash.png?fileID=2800000&amp;guid=359c3c32c3e2a8444a0c886274abbe85&amp;type=3#trash&quot;); width: 24px; height: 24px;"/>
+                <Button name="RenameProfileButton-" tooltip="Rename Current Profile" style="background-image: url(&quot;project://database/Assets/TabbyStudios/TabbyCommon/Res/Icons/edit.png?fileID=2800000&amp;guid=0e2fb8fdc6d284f418428dc53ef22bf6&amp;type=3#edit&quot;); width: 24px; height: 24px;"/>
+                <Button name="DuplicateProfileButton-" tooltip="Duplicate Current Profile" style="background-image: url(&quot;project://database/Assets/TabbyStudios/TabbyCommon/Res/Icons/copy.png?fileID=2800000&amp;guid=e5f789f14d1035948ae77562bb952065&amp;type=3#copy&quot;); width: 24px; height: 24px;"/>
+            </VisualElement>
+            <Button text="Import" name="ImportProfileButton-" style="height: 24px;"/>
+            <Button text="Export" name="ExportProfileButton-" style="height: 24px;"/>
+            <Button text="Rebuild Default" name="RebuildDefaultProfileButton-" style="height: 24px;"/>
+        </VisualElement>
+        <VisualElement name="TopToolbar" class="top-toolbar">
+            <Toggle name="LockButton-BoolSetting-ValueChanger" text="Lock" class="toolbar-toggle"/>
+            <Toggle name="PreviewButton-BoolSetting-ValueChanger" text="Preview" class="toolbar-toggle"/>
+            <Toggle name="HoldKeyToReorder-BoolSetting-ValueChanger" text="Alt To Reorder" class="toolbar-toggle"/>
+            <Toggle name="ExpandTopLevelMenus-BoolSetting-ValueChanger" text="Expand Top Level Menus" class="toolbar-toggle" style="display: none; visibility: hidden;"/>
+            <VisualElement class="spacer"/>
+            <VisualElement name="ZoomContainer" class="zoom-container" style="display: none;">
+                <Label text="Zoom" class="zoom-label"/>
+                <Slider name="SettingsMenuZoom-SliderSetting-ValueChanger" low-value="0.1" high-value="2" value="1" class="zoom-slider"/>
+            </VisualElement>
+        </VisualElement>
+        <VisualElement name="ShowMenuToolbarContainer-" style="flex-grow: 1;"/>
+    </VisualElement>
+</UXML>

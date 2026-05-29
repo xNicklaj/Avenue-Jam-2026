@@ -1,0 +1,21 @@
+{
+    "name": "TabbyContextPatching",
+    "references": [
+        "GUID:af6999344e3cad2449aedd809e66d9c9",
+        "GUID:a7f4c6645b61572439da2569da9e0c41",
+        "GUID:c77d30e333848fd4684dd24f804f1eed",
+        "GUID:f2e2d0fae47723e4780fe1fe6057a5d8",
+        "GUID:60f6116c32e28154a8c061381cc5a796"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "precompiledReferences": [
+        "0Harmony.dll"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "autoReferenced": false,
+    "noEngineReferences": false
+}

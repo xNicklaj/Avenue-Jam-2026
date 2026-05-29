@@ -1,0 +1,19 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <VisualElement name="WelcomeTabContent-" style="flex-grow: 1; flex-direction: column;">
+        <VisualElement class="panel-header">
+            <Label text="What&apos;s New in" name="WhatsNewInLabel-" class="panel-title" style="font-size: 18px;" />
+            <Button text="View Full Changelog" name="ViewChangelogButton-" class="text-button" />
+        </VisualElement>
+        <ScrollView class="update-content-scroll">
+            <VisualElement name="FeatureList-" class="update-section">
+                <Label text="New Features" class="update-category" />
+            </VisualElement>
+            <VisualElement name="ImprovementList-" class="update-section">
+                <Label text="Improvements" class="update-category" />
+            </VisualElement>
+            <VisualElement name="FixList-" class="update-section">
+                <Label text="Bug Fixes" class="update-category" />
+            </VisualElement>
+        </ScrollView>
+    </VisualElement>
+</UXML>

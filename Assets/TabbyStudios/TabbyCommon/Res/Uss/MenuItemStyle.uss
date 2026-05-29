@@ -1,0 +1,20 @@
+.settingsButton {
+    flex-grow: 1;
+    -unity-background-scale-mode: stretch-to-fill;
+    width: 16px;
+    height: 16px;
+    align-self: center;
+    margin-top: 3px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+    margin-left: 3px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+.settingsButton:hover {
+    border-color: gainsboro;
+    border-width: 1px;
+}

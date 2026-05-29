@@ -1,0 +1,29 @@
+:root {
+    --color-background-primary: rgb(202, 202, 202);
+    --color-background-secondary: rgb(180, 180, 180);
+    --color-background-tertiary: rgb(216, 216, 216);
+    --color-background-quaternary: rgb(206, 206, 206);
+
+    --color-button-background: rgb(196, 196, 196);
+    --color-button-hover: rgb(184, 184, 184);
+    --color-button-active: rgb(166, 166, 166);
+
+    --color-text-primary: rgb(22, 22, 22);
+    --color-text-secondary: rgb(40, 40, 40);
+    --color-text-tertiary: rgb(60, 60, 60);
+
+    --color-link: rgb(0, 102, 187);
+    --color-link-hover: rgb(0, 78, 140);
+
+    --color-border: rgba(173, 173, 173, 1);
+
+    --color-badge-feature: rgb(76, 175, 80);
+    --color-badge-improvement: rgb(33, 150, 243);
+    --color-badge-bugfix: rgb(255, 152, 0);
+
+    --color-logo-background: rgba(212, 212, 212, 1);
+    --color-footer-separator: rgb(173, 173, 173);
+
+    --color-warning: rgb(255, 200, 0);
+    --color-warning-text: rgb(70, 70, 0);
+}

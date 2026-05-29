@@ -1,0 +1,6 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:VisualElement style="flex-grow: 0; width: 200px; align-items: stretch; justify-content: center; padding-top: 6px; padding-right: 6px; padding-bottom: 6px; padding-left: 6px; height: 100px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(136, 136, 136); border-right-color: rgb(136, 136, 136); border-top-color: rgb(136, 136, 136); border-bottom-color: rgb(136, 136, 136);">
+        <engine:TextField placeholder-text="Profile Name" style="width: auto; height: 25px;" />
+        <engine:Button text="Save" style="flex-grow: 1; height: 25px;" />
+    </engine:VisualElement>
+</engine:UXML>

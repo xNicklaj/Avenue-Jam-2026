@@ -1,0 +1,7 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <VisualElement name="NewsItem" class="update-item">
+        <VisualElement name="Badge" class="update-badge" style="flex-shrink: 0;" />
+        <Label text="Custom Shader Integration" name="Title" class="update-title" style="padding-top: 0; padding-bottom: 0; -unity-text-align: middle-left;" />
+        <Label text="Create advanced visual effects with our new shader graph integration, supporting both URP and HDRP." name="Text" class="update-description" style="width: 80%; -unity-text-align: middle-left;" />
+    </VisualElement>
+</UXML>

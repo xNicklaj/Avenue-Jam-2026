@@ -1,5 +1,26 @@
 {
   "dependencies": {
+    "com.gitamend.improvedtimers": {
+      "version": "https://github.com/adammyhre/Unity-Improved-Timers.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "0c93083e7968e5d2a7746b38d6d5a477d2b5b3ac"
+    },
+    "com.sisus.init-args": {
+      "version": "file:com.sisus.init-args",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.sisus.shared": "1.0.0"
+      }
+    },
+    "com.sisus.shared": {
+      "version": "file:com.sisus.shared",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.burst": {
       "version": "1.8.28",
       "depth": 2,
@@ -104,6 +125,13 @@
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.6",
       "depth": 3,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.2",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -323,6 +351,15 @@
         "com.unity.xr.legacyinputhelpers": "2.1.2"
       },
       "url": "https://packages.unity.com"
+    },
+    "dev.nicklaj.butter": {
+      "version": "https://github.com/xNicklaj/Butter.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      },
+      "hash": "b19981d09da6a6eaf22670156628c4c2923f73a6"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

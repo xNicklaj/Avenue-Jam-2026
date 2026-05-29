@@ -1,0 +1,8 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <engine:Template name="Separator" src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uxml/Separator.uxml?fileID=9197481963319205126&amp;guid=ee89bdaeeb373cf43a6ea5211200059b&amp;type=3#Separator" />
+    <Style src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uss/MenuItemStyle.uss?fileID=7433441132597879392&amp;guid=6ef98049215b9784e97aba52cecec1a6&amp;type=3#MenuItemStyle" />
+    <engine:VisualElement name="SearchBar-" style="flex-grow: 1; flex-direction: column; visibility: hidden; overflow: visible; display: none; background-color: rgba(87, 214, 47, 0); min-height: 34px; max-height: 34px; height: 34px; padding-top: 0; padding-right: 8px; padding-bottom: 0; padding-left: 8px;">
+        <editor:ToolbarSearchField name="SearchBar" style="height: 12px; width: auto; flex-grow: 1; margin-top: 6px; margin-right: 0; margin-bottom: 6px; margin-left: 0; visibility: visible; max-height: 12px;" />
+        <engine:Instance template="Separator" />
+    </engine:VisualElement>
+</engine:UXML>

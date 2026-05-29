@@ -1,0 +1,19 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <engine:VisualElement name="VisualElement" style="flex-grow: 0; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(135, 135, 135); border-right-color: rgb(135, 135, 135); border-top-color: rgb(135, 135, 135); border-bottom-color: rgb(135, 135, 135); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 6px; padding-right: 6px; padding-bottom: 6px; padding-left: 6px; min-height: 50px; justify-content: center; max-width: 400px;">
+        <engine:Toggle label="Can Have Submenus" name="HasChildrenToggle-"/>
+        <engine:TextField label="Display Name" name="DisplayNameField" style="display: flex; visibility: visible;"/>
+        <engine:TextField label="Function" name="Function" style="display: none; visibility: hidden;"/>
+        <editor:ObjectField label="Icon" allow-scene-objects="false" type="UnityEngine.Texture2D, UnityEngine.CoreModule" name="IconSelector"/>
+        <editor:ColorField label="Icon Color" value="#00FFFFFF" name="IconColorSelector"/>
+        <editor:ColorField label="Background Color" value="#00FFFFFF" name="BackgroundColorSelector"/>
+        <engine:Toggle label="Use Gradient" name="UseGradientToggle-"/>
+        <engine:DropdownField label="Show When" name="ShowWhenDropdown-" choices="Always,Anything is selected,One object is selected,One prefab is selected,Only prefabs are selected,Any part of a prefab is selected" index="0"/>
+        <engine:DropdownField label="Call On" name="CallOn" choices="Nothing,Selection" style="display: none; visibility: hidden;"/>
+        <engine:VisualElement name="ItemButtons" style="flex-grow: 0; flex-direction: row;">
+            <engine:Button name="Delete-DeleteItemButton-IconButton" style="-unity-background-scale-mode: stretch-to-fill; align-self: flex-end; background-image: url(&quot;project://database/Assets/TabbyStudios/TabbyCommon/Res/Icons/trash.png?fileID=2800000&amp;guid=359c3c32c3e2a8444a0c886274abbe85&amp;type=3#trash&quot;);"/>
+            <engine:Button name="Switch-SwitchVisibilityButton-IconButton" style="-unity-background-scale-mode: stretch-to-fill; align-self: flex-end;"/>
+            <engine:Button name="NewSeparator-NewSeparatorButton-IconButton" style="background-image: url(&quot;project://database/Assets/TabbyStudios/TabbyCommon/Res/Icons/plus-minus.png?fileID=2800000&amp;guid=66daaabd0549a0a40bc71cfa95ac4b47&amp;type=3#plus-minus&quot;); -unity-background-scale-mode: stretch-to-fill; align-self: flex-end; background-size: 100% 100%; -unity-slice-left: 2; -unity-slice-top: 2; -unity-slice-right: 2; -unity-slice-bottom: 2;"/>
+            <engine:Button name="NewItem-NewItemButton-IconButton" style="background-image: url(&quot;project://database/Assets/TabbyStudios/TabbyCommon/Res/Icons/plus.png?fileID=2800000&amp;guid=ab794c936d892fc409141b374f674725&amp;type=3#plus&quot;); -unity-background-scale-mode: stretch-to-fill; align-self: flex-end; background-size: 100% 100%; -unity-slice-left: 2; -unity-slice-top: 2; -unity-slice-right: 2; -unity-slice-bottom: 2;"/>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

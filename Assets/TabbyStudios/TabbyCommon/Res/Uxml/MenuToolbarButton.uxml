@@ -1,0 +1,4 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/TabbyStudios/TabbyCommon/Res/Uss/ToolbarStyles.uss?fileID=7433441132597879392&amp;guid=a12e055c1d8571d4da06b24856a426da&amp;type=3#ToolbarStyles" />
+    <Button name="MenuToolbarButton-" text="Assets" focusable="false" class="tab-button" style="flex-grow: 0; flex-shrink: 1; padding-right: 6px; padding-left: 6px;" />
+</UXML>
