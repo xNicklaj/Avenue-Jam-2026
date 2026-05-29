@@ -1,3 +1,4 @@
+using System;
 using Dev.Nicklaj.Butter;
 using ImprovedTimers;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class GameManager : MonoBehaviour
     [Tooltip("Game Duration in minutes.")]
     public float GameDuration = 20f;
     public FloatVariable TimeVariable;
+    public bool AutoStart = true;
     
     private CountdownTimer _timer;
     
@@ -15,6 +17,11 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         _timer = new CountdownTimer(GameDuration * 60f);
+    }
+
+    private void Start()
+    {
+        if(AutoStart) _timer.Start();
     }
 
     // Update is called once per frame
