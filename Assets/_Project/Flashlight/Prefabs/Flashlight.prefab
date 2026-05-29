@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7282000536545022486}
   - component: {fileID: 2002337620222062010}
   - component: {fileID: 9135206020844240981}
+  - component: {fileID: 5922498610081107473}
+  - component: {fileID: 4094237111407062738}
   m_Layer: 0
   m_Name: Flashlight
   m_TagString: Untagged
@@ -179,6 +181,46 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &5922498610081107473
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2316857901172563489}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.025
+  m_Height: 0.18
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4094237111407062738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2316857901172563489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a0a779e9bbcba646a5e1b890dbb3f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: InitArgs::Sisus.Init.Internal.ServiceTag
+  service: {fileID: 2002337620222062010}
+  toClients: 1
+  definingType:
+    scriptAssetGuid: 6ebc937e678155e4d86feeb9248cca97
+    TypeNameAndAssembly: HurricaneVR.Framework.Core.HVRGrabbable, HurricaneVR.Framework
 --- !u!1 &3678114356063946526
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,12 +596,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0b625856d2bd68342b3df8995e60a360, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2141651037890893202}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0b625856d2bd68342b3df8995e60a360, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7685929775923382526}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0b625856d2bd68342b3df8995e60a360, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1585425328161005944}
   m_SourcePrefab: {fileID: 100100000, guid: 0b625856d2bd68342b3df8995e60a360, type: 3}
 --- !u!4 &2394530687098828661 stripped
 Transform:
@@ -616,7 +652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9772631d51b8f32499a99358b6781615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlashlightController
-  MaxLightIntensity: 80
+  MaxLightIntensity: 50
   Value: 1
   Settings:
     duration: 1
@@ -634,39 +670,3 @@ MonoBehaviour:
     useUnscaledTime: 0
     _useFixedUpdate: 0
     _updateType: 0
---- !u!136 &7685929775923382526
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3058160019472936399}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.00024309207
-  m_Height: 0.0018108251
-  m_Direction: 1
-  m_Center: {x: -2.910383e-11, y: -0.00007395887, z: -3.637978e-11}
---- !u!114 &1585425328161005944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3058160019472936399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c75c5c18c01eee4ab0ab9c8cd3c3000, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: HurricaneVR.Framework::HurricaneVR.Framework.Core.HVRGrabbableChild
-  ParentGrabbable: {fileID: 2002337620222062010}

@@ -1,14 +1,16 @@
 using System;
 using HurricaneVR.Framework.ControllerInput;
+using HurricaneVR.Framework.Core;
 using PrimeTween;
 using Sisus.Init;
 using UnityEngine;
 using VInspector;
 
-public class FlashlightController : MonoBehaviour<EmissionController, Light>
+public class FlashlightController : MonoBehaviour<EmissionController, Light, HVRGrabbable>
 {
     private EmissionController _emissionController;
     private Light _light;
+    private HVRGrabbable _grabbable;
     
     public float MaxLightIntensity = 0.2f;
     [Range(0f, 1f)] public float Value = 1f;
@@ -17,10 +19,11 @@ public class FlashlightController : MonoBehaviour<EmissionController, Light>
     private Tween _tween;
     [ShowInInspector, ReadOnly] private bool state;
     
-    protected override void Init(EmissionController emissionController, Light light)
+    protected override void Init(EmissionController emissionController, Light light, HVRGrabbable grabbable)
     {
         _emissionController = emissionController;
         _light = light;
+        _grabbable = grabbable;
     }
 
     [OnValueChanged("Value")]
@@ -40,7 +43,7 @@ public class FlashlightController : MonoBehaviour<EmissionController, Light>
 
     public void Update()
     {
-        if (HVRInputManager.Instance.RightController.PrimaryButtonState.JustActivated) 
+        if (HVRInputManager.Instance.RightController.PrimaryButtonState.JustActivated && _grabbable.IsHandGrabbed) 
             Toggle();
     }
 

@@ -2,35 +2,70 @@ using UnityEngine;
 
 public class Hovering : MonoBehaviour
 {
-[Header("Hover Settings")]
-    [Tooltip("How fast the object hovers up and down.")]
+    [Header("Hover Settings")]
+    [Tooltip("Target distance from the ground.")]
+    public float hoverHeight = 1.0f;
     public float hoverSpeed = 2f;
-    
-    [Tooltip("How high the object goes from its center point.")]
-    public float hoverAmount = 0.5f;
+    public float hoverAmount = 0.15f;
 
+    [Tooltip("How fast it lowers if it is higher than the target height.")]
+    public float descentSpeed = 3f;
+
+    [Tooltip("How strongly it resists tipping over and rights itself (Higher = faster).")]
+    public float rightingSpeed = 5f;
+
+    [Tooltip("How far down to check for the floor.")]
+    public float floorCheckDistance = 3f;
+
+    public LayerMask GroundMask;
+    
     private Rigidbody _rb;
-    private float _previousOffset;
 
     void Start()
     {
-        // Cache the rigidbody and ensure it is set to kinematic
         _rb = GetComponent<Rigidbody>();
-        _rb.isKinematic = true; 
+        _rb.isKinematic = false; 
     }
 
     void FixedUpdate()
     {
-        // 1. Calculate the sine wave offset using the current time
-        float currentOffset = Mathf.Sin(Time.time * hoverSpeed) * hoverAmount;
+        // --- 1. HOVER & HEIGHT LOGIC ---
+        Vector3 rayStart = transform.position + (Vector3.up * 0.5f);
+        
+        if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, floorCheckDistance, layerMask: GroundMask))
+        {
+            _rb.useGravity = false;
 
-        // 2. Find the delta between this physics frame and the last one
-        float deltaMovement = currentOffset - _previousOffset;
+            float targetY = hit.point.y + hoverHeight + (Mathf.Sin(Time.time * hoverSpeed) * hoverAmount);
+            float heightDifference = targetY - _rb.position.y;
 
-        // 3. Additively apply the movement using the Rigidbody's physics-safe method
-        _rb.MovePosition(_rb.position + new Vector3(0f, deltaMovement, 0f));
+            float requiredVelocityY;
 
-        // 4. Save the current offset to use next physics frame
-        _previousOffset = currentOffset;
+            if (heightDifference > 0)
+            {
+                // We are below the target height: Use instant upward correction to hold the weight
+                requiredVelocityY = heightDifference / Time.fixedDeltaTime;
+            }
+            else
+            {
+                // We are above the target height: Use smooth proportional velocity to gently float down
+                requiredVelocityY = heightDifference * descentSpeed; 
+            }
+
+            Vector3 currentVelocity = _rb.linearVelocity;
+            currentVelocity.y = requiredVelocityY;
+            _rb.linearVelocity = currentVelocity;
+        }
+        else
+        {
+            _rb.useGravity = true;
+        }
+
+        // --- 2. ROTATION STABILIZATION LOGIC ---
+        // Capture the current rotation, but force the X and Z tilt to be completely flat (0)
+        Quaternion flatTargetRotation = Quaternion.Euler(0f, _rb.rotation.eulerAngles.y, 0f);
+        
+        // Smoothly blend (Slerp) from our current tilted rotation towards the flat target rotation
+        _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, flatTargetRotation, Time.fixedDeltaTime * rightingSpeed));
     }
 }
