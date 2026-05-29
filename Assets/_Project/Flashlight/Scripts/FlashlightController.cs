@@ -15,7 +15,7 @@ public class FlashlightController : MonoBehaviour<EmissionController, Light>
     public TweenSettings Settings;
 
     private Tween _tween;
-    private bool state;
+    [ShowInInspector, ReadOnly] private bool state;
     
     protected override void Init(EmissionController emissionController, Light light)
     {
@@ -58,6 +58,7 @@ public class FlashlightController : MonoBehaviour<EmissionController, Light>
         if (_tween.isAlive) return;
 
         _tween = Tween.Custom(0, 1, Settings, f => SetValue(f));
+        state = true;
     }
 
     [Button("Turn Off")]
@@ -67,5 +68,6 @@ public class FlashlightController : MonoBehaviour<EmissionController, Light>
         if (_tween.isAlive) return;
 
         _tween = Tween.Custom(1, 0, Settings, f => SetValue(f));
+        state = false;
     }
 }
