@@ -361,6 +361,13 @@
       },
       "hash": "b19981d09da6a6eaf22670156628c4c2923f73a6"
     },
+    "dev.nicklaj.clibs": {
+      "version": "https://github.com/xNicklaj/dev.nicklaj.clibs.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b9438a072fa4d27b266095526e9a57bc783d3448"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,
