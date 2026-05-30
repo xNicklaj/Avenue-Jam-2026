@@ -1,9 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
+using HurricaneVR.Framework.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class CartCargoManager : MonoBehaviour
 {
-    // Custom event class that passes the GameObject that was thrown in
     [System.Serializable]
     public class CargoEvent : UnityEvent<GameObject> { }
 
@@ -12,16 +14,42 @@ public class CartCargoManager : MonoBehaviour
     public CargoEvent onCargoRemoved;
 
     [Header("Settings")]
-    [Tooltip("Only objects with this tag will attach to the cart.")]
     public string cargoTag = "Cargo";
+
+    public Dictionary<Item, int> cargoItems;
+
+    private void Awake()
+    {
+        cargoItems = new Dictionary<Item, int>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the object thrown in is actually cargo
-        
         if (!other.CompareTag(cargoTag)) return;
         
-        // Parent the object to the cart so it moves with it
+        // If it's already a child, do nothing
+        if (other.transform.IsChildOf(transform)) return;
+
+        // --- VR GRAB CHECK (CRITICAL) ---
+        // You MUST check if the player is holding the object here.
+        // Example for XR Interaction Toolkit:
+        // if (other.TryGetComponent(out UnityEngine.XR.Interaction.Toolkit.XRGrabInteractable grabObj))
+        // {
+        //     if (grabObj.isSelected) return; 
+        // }
+        // Replace the above with whatever framework you are using!
+
+        if (other.TryGetComponent(out HVRGrabbable grabbable) && grabbable.IsHandGrabbed) return;
+
+        StartCoroutine(AttachCargo(other));
+    }
+
+    private IEnumerator AttachCargo(Collider other)
+    {
+        yield return new WaitForFixedUpdate();
+        if (other == null) yield break;
+
+        // Parent and freeze
         other.transform.SetParent(transform);
         if (other.TryGetComponent(out Rigidbody rb))
         {
@@ -31,26 +59,52 @@ public class CartCargoManager : MonoBehaviour
             rb.isKinematic = true;
         }
 
-        // Fire your custom event
+        // Dictionary Logic
+        if (other.TryGetComponent(out CargoTag ct))
+        {
+            if (cargoItems.ContainsKey(ct.ItemData))
+                cargoItems[ct.ItemData]++;
+            else
+                cargoItems.Add(ct.ItemData, 1);
+
+            Debug.Log($"Added 1x {ct.ItemData.name} to the cargo. Total: {cargoItems[ct.ItemData]}");
+        }
+
         onCargoAdded.Invoke(other.gameObject);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // Use the same clean early return here!
         if (!other.CompareTag(cargoTag)) return;
 
-        // Remove the cart as the parent
+        // THE FIX: If it is STILL a child, this is just a phantom physics exit. Ignore it!
+        if (other.transform.IsChildOf(transform)) return;
+
+        // Remove the cart as the parent (mostly a fallback, as VR usually unparents it for you)
         other.transform.SetParent(null);
 
-        // Reverse the physics changes so it can fall/bounce normally again
+        // Reverse the physics changes
         if (other.TryGetComponent(out Rigidbody rb))
         {
             rb.useGravity = true;
             rb.isKinematic = false;
         }
+        
+        // Dictionary Logic
+        if (other.TryGetComponent(out CargoTag ct))
+        {
+            if (cargoItems.ContainsKey(ct.ItemData))
+            {
+                cargoItems[ct.ItemData]--; 
+                
+                if (cargoItems[ct.ItemData] <= 0)
+                {
+                    cargoItems.Remove(ct.ItemData); 
+                }
+                Debug.Log($"Removed 1x {ct.ItemData.name} from the cargo.");
+            }
+        }
 
-        // Fire your custom event
         onCargoRemoved.Invoke(other.gameObject);
     }
 }
