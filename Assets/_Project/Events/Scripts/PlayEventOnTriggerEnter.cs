@@ -1,4 +1,6 @@
 using System;
+using Dev.Nicklaj.Butter;
+using TabbyStudios;
 using UnityEngine;
 using UnityEngine.Events;
 using VInspector;
@@ -7,6 +9,7 @@ using VInspector;
 public class PlayEventOnTriggerEnter : MonoBehaviour
 {
     public UnityEvent Event;
+    public GameEvent GameEvent;
     public LayerMask layerMask;
     public bool UseTag;
     [ShowIf("UseTag")]
@@ -29,5 +32,6 @@ public class PlayEventOnTriggerEnter : MonoBehaviour
         if (UseTag && !other.gameObject.CompareTag(Tag)) return;
         HasBeenRaised = true;
         Event.Invoke();
+        GameEvent?.Raise();
     }
 }

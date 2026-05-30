@@ -1755,6 +1755,72 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 023c2722c70344e84a652af10f4bcc01, type: 3}
+--- !u!1 &986953072 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2756012592965202018, guid: 415a0038edf72467a922d036c92e8ed9, type: 3}
+  m_PrefabInstance: {fileID: 1232028546}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &986953076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 986953072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ec51406f9022f4194057d342e830f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmissionController
+  MaxEmission: 1
+  UseTransparency: 1
+  MaxTransparency: 1
+  Emission: 1
+  Settings:
+    duration: 0
+    ease: 0
+    customEase:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    cycles: 0
+    cycleMode: 0
+    startDelay: 0
+    endDelay: 0
+    useUnscaledTime: 0
+    _useFixedUpdate: 0
+    _updateType: 0
+--- !u!114 &986953077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 986953072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3af329c26710cd34db7ecaf0c2ae8b9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: nicklaj.butter::Dev.Nicklaj.Butter.GameEventListener
+  _gameEvent: {fileID: 11400000, guid: 38e69491a95140f42bc8d8bd416bdbcb, type: 2}
+  Channel: 0
+  _response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 986953076}
+        m_TargetAssemblyTypeName: EmissionController, Assembly-CSharp
+        m_MethodName: SetEmission
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1096098343
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2060,11 +2126,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 598897eef8cdc104aba98cd44a238746, type: 2}
     - target: {fileID: 906930914052352400, guid: 415a0038edf72467a922d036c92e8ed9, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.00000019470721
+      value: -0.00000019470737
       objectReference: {fileID: 0}
     - target: {fileID: 906930914052352400, guid: 415a0038edf72467a922d036c92e8ed9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -8.881784e-16
+      value: -3.5527137e-15
       objectReference: {fileID: 0}
     - target: {fileID: 906930914052352400, guid: 415a0038edf72467a922d036c92e8ed9, type: 3}
       propertyPath: m_LocalRotation.z
@@ -2103,7 +2169,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 415a0038edf72467a922d036c92e8ed9, type: 3}
       insertIndex: 4
       addedObject: {fileID: 665906768}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -2756012592965202018, guid: 415a0038edf72467a922d036c92e8ed9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 986953076}
+    - targetCorrespondingSourceObject: {fileID: -2756012592965202018, guid: 415a0038edf72467a922d036c92e8ed9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 986953077}
   m_SourcePrefab: {fileID: 100100000, guid: 415a0038edf72467a922d036c92e8ed9, type: 3}
 --- !u!4 &1232028547 stripped
 Transform:

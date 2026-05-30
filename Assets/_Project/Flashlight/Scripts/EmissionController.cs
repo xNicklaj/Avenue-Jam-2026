@@ -1,4 +1,5 @@
 using System;
+using PrimeTween;
 using UnityEngine;
 using VInspector;
 
@@ -14,6 +15,8 @@ public class EmissionController : MonoBehaviour
 
     [EndIf] 
     [Range(0f, 1f)] public float Emission = 1f;
+
+    public TweenSettings Settings;
     
     private MeshRenderer _renderer;
     private MaterialPropertyBlock _propertyBlock;
@@ -33,5 +36,10 @@ public class EmissionController : MonoBehaviour
         _propertyBlock.SetFloat(emissionMultiplier, f * MaxEmission);
         _propertyBlock.SetFloat(transparency, f * MaxTransparency);
         _renderer.SetPropertyBlock(_propertyBlock);
+    }
+
+    public void LerpTo(float value, float time)
+    {
+        Tween.Custom(Emission, value, Settings, (f) => SetEmission(f));
     }
 }
