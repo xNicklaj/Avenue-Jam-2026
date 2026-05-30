@@ -4,6 +4,7 @@ using HurricaneVR.Framework.Core;
 using PrimeTween;
 using Sisus.Init;
 using UnityEngine;
+using UnityEngine.Events;
 using VInspector;
 
 public class FlashlightController : MonoBehaviour<EmissionController, Light, HVRGrabbable>
@@ -18,6 +19,9 @@ public class FlashlightController : MonoBehaviour<EmissionController, Light, HVR
 
     private Tween _tween;
     [ShowInInspector, ReadOnly] private bool state;
+
+    public UnityEvent OnTurnOn;
+    public UnityEvent OnTurnOff;
     
     protected override void Init(EmissionController emissionController, Light light, HVRGrabbable grabbable)
     {
@@ -62,6 +66,7 @@ public class FlashlightController : MonoBehaviour<EmissionController, Light, HVR
 
         _tween = Tween.Custom(0, 1, Settings, f => SetValue(f));
         state = true;
+        OnTurnOn?.Invoke();
     }
 
     [Button("Turn Off")]
@@ -72,5 +77,6 @@ public class FlashlightController : MonoBehaviour<EmissionController, Light, HVR
 
         _tween = Tween.Custom(1, 0, Settings, f => SetValue(f));
         state = false;
+        OnTurnOff?.Invoke(); 
     }
 }
