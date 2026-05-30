@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e79cc10fdd742e247b420dec83d89311, type: 3}
+  m_Name: Dialogues
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueList
+  dialogueList:
+  - SpeakerTag: InitialSpeaker
+    Clip: {fileID: 8300000, guid: e1bacaeeb29b3a646a9684dc13d55c9b, type: 3}
+    Description: Initial Dialogue
+  - SpeakerTag: Clock
+    Clip: {fileID: 8300000, guid: ea4f80d4243db9d4496f18c36255cd65, type: 3}
+    Description: Light go out and flashlight
+  - SpeakerTag: Clock
+    Clip: {fileID: 8300000, guid: 46d104f74e2900f4cbe34f0b98c67649, type: 3}
+    Description: First time at reactor

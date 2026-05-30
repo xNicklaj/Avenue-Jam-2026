@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 9135206020844240981}
   - component: {fileID: 5922498610081107473}
   - component: {fileID: 4094237111407062738}
+  - component: {fileID: 3954011422559799593}
+  - component: {fileID: 5036575793800813203}
   m_Layer: 0
   m_Name: Flashlight
   m_TagString: Untagged
@@ -222,6 +224,59 @@ MonoBehaviour:
   definingType:
     scriptAssetGuid: 6ebc937e678155e4d86feeb9248cca97
     TypeNameAndAssembly: HurricaneVR.Framework.Core.HVRGrabbable, HurricaneVR.Framework
+--- !u!114 &3954011422559799593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2316857901172563489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 258d25e1a2b14754b247fd5f28e9f682, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HurricaneVR.Framework::HurricaneVR.Framework.Core.Sockets.HVRSocketable
+  Poses:
+  - SocketTag: Flashlight
+    Position: {x: -0.00000023650766, y: -0.00000020861626, z: 0.00000029954197}
+    EulerAngles: {x: 270, y: 0.000000057304423, z: 0}
+  CounterScale: {x: 1, y: 1, z: 1}
+  UseRendererBounds: 1
+  ScaleSize: 0
+  SocketScale: 1
+  ScaleOverride: {fileID: 0}
+  SocketedClip: {fileID: 0}
+  UnsocketedClip: {fileID: 0}
+  LinkedGrabbables: []
+  SocketOrientation: {fileID: 0}
+--- !u!114 &5036575793800813203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2316857901172563489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10345b4efa150014fb756a02715a4231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HurricaneVR.Framework::HurricaneVR.Framework.Core.Sockets.HVRTagSocketable
+  Poses:
+  - SocketTag: Flashlight
+    Position: {x: -0.00000023650766, y: -0.00000020861626, z: 0.00000029954197}
+    EulerAngles: {x: 270, y: 0.000000057304423, z: 0}
+  CounterScale: {x: 1, y: 1, z: 1}
+  UseRendererBounds: 1
+  ScaleSize: 0
+  SocketScale: 1
+  ScaleOverride: {fileID: 0}
+  SocketedClip: {fileID: 0}
+  UnsocketedClip: {fileID: 0}
+  LinkedGrabbables: []
+  SocketOrientation: {fileID: 0}
+  Tags:
+    Tags: {fileID: 11400000, guid: 0e83bcde818c784468e6c9a69d44702f, type: 2}
+    _data: 2
 --- !u!1 &3678114356063946526
 GameObject:
   m_ObjectHideFlags: 0

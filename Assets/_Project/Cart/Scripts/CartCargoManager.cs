@@ -57,6 +57,7 @@ public class CartCargoManager : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
             rb.useGravity = false;
             rb.isKinematic = true;
+            rb.detectCollisions = false;
         }
 
         // Dictionary Logic

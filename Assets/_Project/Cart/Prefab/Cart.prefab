@@ -141,6 +141,7 @@ Transform:
   - {fileID: 2522645203664523010}
   - {fileID: 4535682397529130647}
   - {fileID: 5460997338565520871}
+  - {fileID: 2241106360407362974}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5321300282958157954
@@ -1092,6 +1093,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HurricaneVR.Framework::HurricaneVR.Framework.Core.HVRGrabbableChild
   ParentGrabbable: {fileID: 5129942673411962323}
+--- !u!1 &4201891030847012203
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2241106360407362974}
+  m_Layer: 0
+  m_Name: Sockets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2241106360407362974
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4201891030847012203}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4787192530901056202}
+  m_Father: {fileID: 498612162751467311}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5682693944145216495
 GameObject:
   m_ObjectHideFlags: 0
@@ -1280,9 +1313,9 @@ MonoBehaviour:
   RightAutoPose: 0
   SelectionIndex: 0
   PoseNames:
-  - Primary Not Set
+  - 'Primary: CartPose'
   PrimaryPose:
-    Pose: {fileID: 0}
+    Pose: {fileID: 11400000, guid: f204d5fcf6f79a6489d8e7fc504819b5, type: 2}
     Weight: 1
     Mask: 0
     Type: 0
@@ -1698,9 +1731,9 @@ MonoBehaviour:
   RightAutoPose: 0
   SelectionIndex: 0
   PoseNames:
-  - Primary Not Set
+  - 'Primary: CartPose'
   PrimaryPose:
-    Pose: {fileID: 0}
+    Pose: {fileID: 11400000, guid: f204d5fcf6f79a6489d8e7fc504819b5, type: 2}
     Weight: 1
     Mask: 0
     Type: 0
@@ -2035,6 +2068,94 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HurricaneVR.Framework::HurricaneVR.Framework.Core.HVRGrabbableChild
   ParentGrabbable: {fileID: 5129942673411962323}
+--- !u!1001 &5049979662894785186
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2241106360407362974}
+    m_Modifications:
+    - target: {fileID: 322754496239818837, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: PoseTag
+      value: Flashlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818837, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: AutoSpawnPrefab
+      value: 
+      objectReference: {fileID: 2316857901172563489, guid: 740776a9c15d94e498a13d96583b0058, type: 3}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.696
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.483
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.513
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.99999493
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.003197819
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -0.366
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818857, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: Tags._data
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 322754496239818859, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: m_Name
+      value: LargeSocket
+      objectReference: {fileID: 0}
+    - target: {fileID: 1044908844358574779, guid: b92df1423cac43545913fee931baaa82, type: 3}
+      propertyPath: Target
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 322754496239818838, guid: b92df1423cac43545913fee931baaa82, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 322754496050350305, guid: b92df1423cac43545913fee931baaa82, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b92df1423cac43545913fee931baaa82, type: 3}
+--- !u!4 &4787192530901056202 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 322754496239818856, guid: b92df1423cac43545913fee931baaa82, type: 3}
+  m_PrefabInstance: {fileID: 5049979662894785186}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5640061795768228313
 PrefabInstance:
   m_ObjectHideFlags: 0

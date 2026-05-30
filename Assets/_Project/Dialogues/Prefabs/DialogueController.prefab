@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3039558803888820239
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4104499600677199924}
+  - component: {fileID: 4079146190668632813}
+  - component: {fileID: 2966184938964208941}
+  - component: {fileID: 5843788955863357859}
+  m_Layer: 0
+  m_Name: DialogueController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4104499600677199924
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3039558803888820239}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.88865, y: 15.6, z: -56.08061}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4079146190668632813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3039558803888820239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9776ced28538dbc4ab78f372bad0d857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueController
+  Dialogues: {fileID: 11400000, guid: 154c176cc39a61a418f67ba800cc1196, type: 2}
+--- !u!114 &2966184938964208941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3039558803888820239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 116de783bb4f059429a4208b137aa9f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: nicklaj.butter::Dev.Nicklaj.Butter.IntEventListener
+  _gameEvent: {fileID: 11400000, guid: ddbd52207c292c64380a5c6a513c71f8, type: 2}
+  Channel: 0
+  _response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4079146190668632813}
+        m_TargetAssemblyTypeName: DialogueController, Assembly-CSharp
+        m_MethodName: PlayDialogue
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5843788955863357859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3039558803888820239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a0a779e9bbcba646a5e1b890dbb3f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: InitArgs::Sisus.Init.Internal.ServiceTag
+  service: {fileID: 4079146190668632813}
+  toClients: 6
+  definingType:
+    scriptAssetGuid: 9776ced28538dbc4ab78f372bad0d857
+    TypeNameAndAssembly: DialogueController, Assembly-CSharp
