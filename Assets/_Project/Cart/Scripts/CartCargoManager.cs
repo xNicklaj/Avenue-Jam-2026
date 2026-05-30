@@ -78,7 +78,7 @@ public class CartCargoManager : MonoBehaviour
         if (!other.CompareTag(cargoTag)) return;
 
         // THE FIX: If it is STILL a child, this is just a phantom physics exit. Ignore it!
-        if (other.transform.IsChildOf(transform)) return;
+        //if (other.transform.IsChildOf(transform)) return;
 
         // Remove the cart as the parent (mostly a fallback, as VR usually unparents it for you)
         other.transform.SetParent(null);
